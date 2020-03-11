@@ -121,6 +121,9 @@ samples %>%
   coord_cartesian(xlim = 0:1) +
   xlab("proportion of water (p)")
 
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
 
 #We want to know how likely Riccardo is to perform above chance
 r %>% 

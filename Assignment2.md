@@ -119,6 +119,15 @@ samples %>%
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
 ``` r
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.3785379 1.0000000
+
+``` r
 #We want to know how likely Riccardo is to perform above chance
 r %>% 
   filter(p_grid > .5) %>% 
@@ -179,7 +188,7 @@ k %>%
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ``` r
-  ## Prior divided by the 20 grids for scaling 
+  ## Prior divided by the 10000 grids for scaling 
 
 
 # We sample from the Grid approximation
