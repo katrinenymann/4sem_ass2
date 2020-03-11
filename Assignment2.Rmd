@@ -1,0 +1,869 @@
+---
+title: "Computational Modeling - Assignment 2"
+author: "Riccardo Fusaroli"
+date: "29/01/2019"
+output: 
+  md_document:
+    variant: markdown_github
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+```{r, include = FALSE}
+library(tidyverse)
+library(rethinking)
+```
+
+## In this assignment we learn how to assess rates from a binomial distribution, using the case of assessing your teachers' knowledge of CogSci
+
+N.B. there is a second part at the bottom for next week.
+
+### First part
+
+You want to assess your teachers' knowledge of cognitive science. "These guys are a bunch of drama(turgist) queens, mindless philosophers, chattering communication people and Russian spies. Do they really know CogSci?", you think.
+
+To keep things simple (your teachers should not be faced with too complicated things):
+- You created a pool of equally challenging questions on CogSci
+- Each question can be answered correctly or not (we don't allow partially correct answers, to make our life simpler).
+- Knowledge of CogSci can be measured on a scale from 0 (negative knowledge, all answers wrong) through 0.5 (random chance) to 1 (awesome CogSci superpowers)
+
+This is the data:
+- Riccardo: 3 correct answers out of 6 questions
+- Kristian: 2 correct answers out of 2 questions (then he gets bored)
+- Josh: 160 correct answers out of 198 questions (Josh never gets bored)
+- Mikkel: 66 correct answers out of 132 questions
+
+Questions:
+
+1. What's Riccardo's estimated knowledge of CogSci? What is the probability he knows more than chance (0.5) [try figuring this out. if you can't peek into chapters 3.1 and 3.2 and/or the slides]?
+
+- First implement a grid approximation (hint check paragraph 2.4.1!) with a uniform prior, calculate the posterior and plot the results
+- Then implement a quadratic approximation (hint check paragraph 2.4.2!).
+- N.B. for the rest of the exercise just keep using the grid approximation (we'll move to quadratic approximations in two classes)
+
+```{r, include = FALSE}
+## We do grid approximation  with a uniform prior
+# define grid
+p_grid <- seq( from=0 , to=1 , length.out=20 )
+
+# define prior
+prior <- rep( 1 , 20 )
+
+# compute likelihood at each value in grid
+likelihood <- dbinom( 3 , size=6 , prob=p_grid )
+
+# compute product of likelihood and prior
+unstd.posterior <- likelihood * prior
+
+# standardize the posterior, so it sums to 1
+posterior <- unstd.posterior / sum(unstd.posterior)
+
+
+
+# We plot it
+plot( p_grid , posterior , type="b" ,
+    xlab="probability of Riccardo being right" , ylab="posterior probability" )
+mtext( "20 points" )
+```
+
+
+```{r}
+# We do grid approximation
+
+(r <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(3, size = 6, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot it
+r_1 <- r %>% 
+  ggplot(aes(x = p_grid, y = posterior, color = "red")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Riccardo being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4, color = "blue") +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+r_1
+
+## We do quadritic approximation
+Riccardo_qa <-
+  rethinking::map(
+    alist(
+      w ~ dbinom(6, p),  # binomial likelihood
+      p ~ dunif(0, 1)    # uniform prior
+    ), 
+    data = list(w = 3))
+
+# display summary of quadratic approximation
+precis(Riccardo_qa)
+
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  r %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+
+# We make a density plot of the sample
+samples %>% 
+  ggplot(aes(x = p_grid)) +
+  geom_density(fill = "black") +
+  coord_cartesian(xlim = 0:1) +
+  xlab("proportion of water (p)")
+
+
+#We want to know how likely Riccardo is to perform above chance
+r %>% 
+  filter(p_grid > .5) %>% 
+  summarise(sum = sum(posterior))
+
+```
+This means that there is 50% chance that Riccardo will perform better than chance. 
+
+
+2. Estimate all the teachers' knowledge of CogSci. Who's best? Use grid approximation. Comment on the posteriors of Riccardo and Mikkel.
+2a. Produce plots of the prior, and posterior for each teacher.
+
+```{r}
+################# We do grid approximation for Kristian ################
+(k <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(2, size = 2, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+k %>% 
+  ggplot(aes(x = p_grid, y = posterior, color = "red")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Kristian being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4) + 
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  
+  ## Prior divided by the 10000 grids for scaling 
+
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  k %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+
+# We make a density plot of the sample
+samples %>% 
+  ggplot(aes(x = p_grid)) +
+  geom_density(fill = "black") +
+  coord_cartesian(xlim = 0:1) +
+  xlab("proportion of correct answers")
+
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+
+
+#We want to know how likely Riccardo is to perform above chance
+k %>% 
+  filter(p_grid > .5) %>% 
+  summarise(sum = sum(posterior))
+
+## We do a prior predictive check
+ppc <- rbinom(1e4, 6, runif(1e4, min = 0.5, max = 1))
+dens(ppc)
+
+
+################# We do a grid approximation for Josh ################
+# We do grid approximation
+
+(j <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(160, size = 198, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot it
+j %>% 
+  ggplot(aes(x = p_grid, y = posterior, color = "red")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Josh being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  j %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+
+# We make a density plot of the sample
+samples %>% 
+  ggplot(aes(x = p_grid)) +
+  geom_density(fill = "black") +
+  coord_cartesian(xlim = 0:1) +
+  xlab("proportion of correct answers")
+
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+
+
+#We want to know how likely Riccardo is to perform above chance
+j %>% 
+  filter(p_grid > .5) %>% 
+  summarise(sum = sum(posterior))
+
+################ We do grid approximation for Mikkel ################
+# We do grid approximation
+
+(m <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(66, size = 132, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot it
+m %>% 
+  ggplot(aes(x = p_grid, y = posterior, color = "red")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Mikkel being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())  + geom_hline(yintercept=1/1e4) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  m %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+
+# We make a density plot of the sample
+samples %>% 
+  ggplot(aes(x = p_grid)) +
+  geom_density(fill = "black") +
+  coord_cartesian(xlim = 0:1) +
+  xlab("proportion of correct answers")
+
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+
+#We want to know how likely Mikkel is to perform above chance
+m %>% 
+  filter(p_grid > .5) %>% 
+  summarise(sum = sum(posterior))
+
+```
+Josh is the best. 
+Riccard and Mikkel both have a 50 % chance of performing above chance. 
+
+3. Change the prior. Given your teachers have all CogSci jobs, you should start with a higher appreciation of their knowledge: the prior is a normal distribution with a mean of 0.8 and a standard deviation of 0.2. 
+3a. Produce plots of the prior and posterior for each teacher.
+
+```{r}
+### Riccardo
+# We make the new posterior from a new prior
+(r <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(3, size = 6, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+r %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Riccardo being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 1e4 grids for scaling
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  r %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+
+### Kristian
+# We make the new posterior from a new prior
+(k <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(2, size = 2, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+k %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Kristian being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  k %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+
+#### Josh
+# We make the new posterior from a new prior
+(j <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(160, size = 198, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+
+j %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Josh, 10000 points",
+       x = "probability of Josh being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  j %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+
+
+#Mikkel
+# We make the new posterior from a new prior
+(m <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 10000),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(66, size = 132, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+m %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Mikkel,10000 points",
+       x = "probability of Mikkel being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  m %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+
+```
+Do the results change (and if so how)? 
+
+For Riccardo, his posterior probability used to be highest around 50 % but now it is highest around 60 %. He is now more likely to answer right. 
+For Kristian, his posterior probability used to be highest at 100%, but now it went down to around 85%
+For Josh, it did not really change. 
+For Mikkel, it did not really change much. When increasing the amount of points in the grid, we can see they look very similar.  
+
+
+4. You go back to your teachers and collect more data (multiply the previous numbers by 100). Calculate their knowledge with both a uniform prior and a normal prior with a mean of 0.8 and a standard deviation of 0.2. Do you still see a difference between the results? Why?
+
+We do with a uniform prior
+```{r}
+### Riccardo
+# We make the new posterior from a new prior
+(r <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(3*100, size = 6*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+r %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "10000 points",
+       x = "probability of Riccardo being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4, colour="blue") +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+
+### Kristian
+# We make the new posterior from a new prior
+(k <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(2*100, size = 2*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+k %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Kristian, 10000 points",
+       x = "probability of Kristian being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4, colour="blue") +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+
+#### Josh
+# We make the new posterior from a new prior
+(j <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(160*100, size = 198*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+
+j %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Josh, 10000 points",
+       x = "probability of Josh being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_hline(yintercept=1/1e4, color="blue")+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+#Mikkel
+# We make the new posterior from a new prior
+(m <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = 1) %>%                                   # define prior
+   mutate(likelihood      = dbinom(66*100, size = 132*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+m %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Mikkel,10000 points",
+       x = "probability of Mikkel being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_hline(yintercept=1/1e4, color="blue") +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+```
+
+We do with the normal prior
+```{r}
+### Riccardo
+# We make the new posterior from a new prior
+(r <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(3*100, size = 6*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+r %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Riccardo, 10000 points",
+       x = "probability of Riccardo being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+#The previous plot was
+r_1
+
+### Kristian
+# We make the new posterior from a new prior
+(k <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(2*100, size = 2*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+k %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Kristian, 10000 points",
+       x = "probability of Kristian being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+
+#### Josh
+# We make the new posterior from a new prior
+(j <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(160*100, size = 198*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+
+j %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Josh, 10000 points",
+       x = "probability of Josh being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+#Mikkel
+# We make the new posterior from a new prior
+(m <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(66*100, size = 132*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+m %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Mikkel, 10000 points",
+       x = "probability of Mikkel being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+```
+We see that Kristian now is less affected by the normal prior and once again has the highest probability at the 100%. 
+
+We see that Riccardo also is not very different from the uniform prior to the normal prior. 
+
+Adding x100 times of observations shows that the more observations make the normal prior change less for the teachers who used to be changed a lot by the normal prior. 
+
+5. Imagine you're a skeptic and think your teachers do not know anything about CogSci, given the content of their classes. How would you operationalize that belief?
+```{r}
+## We will add a normal prior with a mean of 50 % in the belief that they will perform around chance level. 
+# We will have  a sd of 0.05 because we are very sure of them not knowing anything!
+
+### Riccardo
+# We make the new posterior from a new prior
+(r <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(3, size = 6, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+r %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Riccardo, 10000 points",
+       x = "probability of Riccardo being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.5, sd = 0.05)/1e4), colour="red")) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+
+### Kristian
+# We make the new posterior from a new prior
+(k <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(2, size = 2, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+## We plot
+k %>% 
+  ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Kristian, 10000 points",
+       x = "probability of Kristian being right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.5, sd = 0.05)/20), colour="red")) +
+  scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+## Prior divided by the 20 grids for scaling
+
+#### Josh
+# We make the new posterior from a new prior
+(j <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(160, size = 198, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+
+j %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Josh, 10000 points",
+       x = "probability of Josh being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.5, sd = 0.05)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+
+#Mikkel
+# We make the new posterior from a new prior
+(m <-
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
+        prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
+   mutate(likelihood      = dbinom(66, size = 132, prob = p_grid)) %>%  # compute likelihood at each value in grid
+   mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
+   mutate(posterior       = unstd_posterior / sum(unstd_posterior))  # standardize the posterior, so it sums to 1
+)
+m %>% 
+  ggplot(aes(x = p_grid, y = posterior,color="blue")) +
+  geom_point() +
+  geom_line() +
+  labs(subtitle = "Mikkel, 10000 points",
+       x = "probability of Mikkel being Right",
+       y = "posterior probability") +
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.5, sd = 0.05)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+```
+
+Making functions
+
+```{r}
+# setup
+pacman::p_load(pacman, 
+               tidyverse, 
+               rethinking,
+               patchwork) # for ordering plots together
+
+# We make a df for our observations
+results_df <- data.frame(teacher = c("RF", "KT", "JS", "MW"),
+                         correct = c(3, 2, 160, 66), 
+                         n_quest = c(6, 2, 198, 132))
+
+#We define p_grid
+p_grid <-   p_grid <- seq(0,1, length.out = 10000)
+#We define the bin_size
+bin_size <- abs(p_grid[1] - p_grid[2])
+#We define an informed prior
+inf_prior <- dbeta(p_grid, 8, 4)
+
+#We make a function
+calc_teacher <- function(n_correct, n_question, prior, length_out = 10000){
+  # this function calculate the posterior
+  p_grid <- seq(0,1, length.out = 10000)
+  likelihood <- dbinom(n_correct, 
+                       size = n_question, 
+                       prob = p_grid)
+  unstd_posterior <- prior * likelihood
+  bin_size <- abs(p_grid[1] - p_grid[2])
+  posterior <- unstd_posterior/sum(unstd_posterior * bin_size)
+  return(list(teacher_posterior = posterior, 
+              likelihood = likelihood,
+              grid = p_grid))
+}
+
+# We use the function
+kt_results <- calc_teacher(2, 2, prior = inf_prior)
+# We plot it
+plot(kt_results$grid, kt_results$teacher_posterior)
+
+# We make a function to make a pretty plot
+pretty_plot <- function(p_grid, prior, likelihood, posterior, title = " "){
+  # define data
+  d <- tibble(p_grid = p_grid, 
+              prior = prior, 
+              likelihood = likelihood,
+              posterior = posterior)
+  
+  # make to long format
+  d <- d %>% 
+    pivot_longer(cols = c("prior", "likelihood", "posterior"), names_to = "name", values_to = "value")
+  
+  # make a 
+  p <- ggplot(d, aes(x = p_grid, y = value, color = name)) + 
+    geom_line() + 
+    labs(x = "x", y = "Density", title = title) + 
+    theme_bw() + 
+    ggplot2::theme(panel.background = element_rect(fill = "white"),
+                   panel.border = element_blank()) +
+    scale_colour_brewer(palette = "Dark2", direction = 1)
+  return(p)
+}
+
+#We can retrive a function like this
+#source("C:/Users/katri/OneDrive/Dokumenter/Cognitive Science/4th semester/Computational modeling/R code/my_useful_functions.R")
+  
+# We make a plot with the function
+pretty_plot(p_grid = kt_results$grid, 
+            prior = inf_prior, 
+            likelihood = kt_results$likelihood, 
+            posterior = kt_results$teacher_posterior, title = " ")
+#This is something else...
+sum(abs(kt_results$likelihood - kt_results$teacher_posterior) ) / length(kt_results$likelihood)
+sum(abs(inf_prior - kt_results$teacher_posterior)*bin_size)
+plot(p_grid,kt_results$teacher_posterior-0.6)
+```
+
+### Second part: Focusing on predictions
+
+Last year you assessed the teachers (darned time runs quick!). Now you want to re-test them and assess whether your models are producing reliable predictions. In Methods 3 we learned how to do machine-learning style assessment of predictions (e.g. rmse on testing datasets). Bayesian stats makes things a bit more complicated. So we'll try out how that works. N.B. You can choose which prior to use for the analysis of last year's data.
+
+Questions to be answered (but see guidance below):
+1- Write a paragraph discussing how assessment of prediction performance is different in Bayesian vs. frequentist models
+
+
+
+2- Provide at least one plot and one written line discussing prediction errors for each of the teachers.
+```{r}
+# We make a new df for this years observations
+results_df_2 <- data.frame(teacher = c("RF", "KT", "JS", "MW"),
+                         correct = c(9, 8, 148, 34), 
+                         n_quest = c(10, 12, 172, 65))
+#We define p_grid
+p_grid <-   p_grid <- seq(0,1, length.out = 10000)
+#We define the bin_size
+bin_size <- abs(p_grid[1] - p_grid[2])
+#We define an informed prior
+inf_prior <- dnorm(p_grid, 0.8, 0.2)
+
+# We use the function to calculate the old kt results
+kt_results <- calc_teacher(2, 2, prior = inf_prior)
+# We plot it
+plot(kt_results$grid, kt_results$teacher_posterior)
+
+#Now we want to calculate the new results with the old results as a prior
+# We use the function to calculate the old kt results
+kt_results_2 <- calc_teacher(8, 12, prior = kt_results$teacher_posterior)
+# We plot it
+plot(kt_results_2$grid, kt_results_2$teacher_posterior)
+
+# We plot the new
+pretty_plot(p_grid, 
+            prior = kt_results$teacher_posterior, 
+            likelihood = kt_results_2$likelihood, 
+            posterior = kt_results_2$teacher_posterior, title = "Kristian's new posterior distribution")
+
+###Mikkel###
+
+mw_old<-calc_teacher(66,132,inf_prior,length_out = 10000)
+#calculate new results
+mw_new<-calc_teacher(34,65,mw_old$teacher_posterior,length_out = 10000)
+
+#function(p_grid, prior, likelihood, posterior, title = " ")
+mw_old_plot<-pretty_plot(p_grid,inf_prior,mw_old$likelihood,mw_old$teacher_posterior)
+mw_old_plot
+
+mw_new_plot<-pretty_plot(p_grid,mw_old$teacher_posterior,mw_new$likelihood,mw_new$teacher_posterior,"Mikkel´s new posterior distribution")
+mw_new_plot
+
+###Josh###
+
+j_old<-calc_teacher(160,198,inf_prior,length_out = 10000)
+#calculate new results
+j_new<-calc_teacher(148,172,j_old$teacher_posterior,length_out = 10000)
+
+#function(p_grid, prior, likelihood, posterior, title = " ")
+j_old_plot<-pretty_plot(p_grid,inf_prior,j_old$likelihood,j_old$teacher_posterior)
+j_old_plot
+
+j_new_plot<-pretty_plot(p_grid,j_old$teacher_posterior,j_new$likelihood,j_new$teacher_posterior,"Josh´s new posterior distribution")
+j_new_plot
+
+
+###riccardo###
+
+r_old<-calc_teacher(3,6,inf_prior,length_out = 10000)
+#calculate new results
+r_new<-calc_teacher(9,10,r_old$teacher_posterior,length_out = 10000)
+
+#function(p_grid, prior, likelihood, posterior, title = " ")
+r_old_plot<-pretty_plot(p_grid,inf_prior,r_old$likelihood,r_old$teacher_posterior)
+r_old_plot
+
+r_new_plot<-pretty_plot(p_grid,r_old$teacher_posterior,r_new$likelihood,r_new$teacher_posterior,"Riccardo´s new posterior distribution")
+r_new_plot
+
+```
+
+
+This is the old data:
+- Riccardo: 3 correct answers out of 6 questions
+- Kristian: 2 correct answers out of 2 questions (then he gets bored)
+- Josh: 160 correct answers out of 198 questions (Josh never gets bored)
+- Mikkel: 66 correct answers out of 132 questions
+
+This is the new data:
+- Riccardo: 9 correct answers out of 10 questions (then he freaks out about teaching preparation and leaves)
+- Kristian: 8 correct answers out of 12 questions
+- Josh: 148 correct answers out of 172 questions (again, Josh never gets bored)
+- Mikkel: 34 correct answers out of 65 questions
+
+Guidance Tips
+
+1. There are at least two ways of assessing predictions.
+2. Last year's results are this year's expectations.
+3. Are the parameter estimates changing? (way 1)
+4. How does the new data look in last year's predictive posterior? (way 2)
+
+Notes for part 2
+
+Subtracting map post 1 from map post 2. 
+Then the errors are left. 
+They will be distributed e.g. normally distributed around 0 --> then it is a relatively good fit 
+We can also look at HDPI
+
+
+My notes for Kenneth's class
+
+standardize posterior. Divide by the sum of the unstandardized posterior.
+The posterior is the upper part of bayes theorem. 
+The lower part of bayes theorem is a scaling of the y axes. It's a constant. It makes sure we don't sum to more than 1. 
+We can standardize the posterior by saying un_st_post/sum(un_st_post*bin_size)
+We draw rectangles under the distribution basically.  
+The bin_size is the distance between two points in the grid. 
+Ypu can only call it density when it sums to one meaning standardized. 
+We take the interval over the posterior. 
+
+
