@@ -44,7 +44,7 @@ Questions:
 # We do grid approximation
 
 (r <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(3, size = 6, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -52,29 +52,20 @@ Questions:
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1    0               0        0       
-    ##  2 0.0526     1    0.00248         0.00248  0.000913
-    ##  3 0.105      1    0.0167          0.0167   0.00616 
-    ##  4 0.158      1    0.0470          0.0470   0.0173  
-    ##  5 0.211      1    0.0918          0.0918   0.0338  
-    ##  6 0.263      1    0.146           0.146    0.0537  
-    ##  7 0.316      1    0.202           0.202    0.0743  
-    ##  8 0.368      1    0.252           0.252    0.0928  
-    ##  9 0.421      1    0.290           0.290    0.107   
-    ## 10 0.474      1    0.310           0.310    0.114   
-    ## 11 0.526      1    0.310           0.310    0.114   
-    ## 12 0.579      1    0.290           0.290    0.107   
-    ## 13 0.632      1    0.252           0.252    0.0928  
-    ## 14 0.684      1    0.202           0.202    0.0743  
-    ## 15 0.737      1    0.146           0.146    0.0537  
-    ## 16 0.789      1    0.0918          0.0918   0.0338  
-    ## 17 0.842      1    0.0470          0.0470   0.0173  
-    ## 18 0.895      1    0.0167          0.0167   0.00616 
-    ## 19 0.947      1    0.00248         0.00248  0.000913
-    ## 20 1          1    0               0        0
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1   0.       0                0.      
+    ##  2 0.000100     1   2.00e-11 0.0000000000200  1.40e-14
+    ##  3 0.000200     1   1.60e-10 0.000000000160   1.12e-13
+    ##  4 0.000300     1   5.40e-10 0.000000000540   3.78e-13
+    ##  5 0.000400     1   1.28e- 9 0.00000000128    8.95e-13
+    ##  6 0.000500     1   2.50e- 9 0.00000000250    1.75e-12
+    ##  7 0.000600     1   4.31e- 9 0.00000000431    3.02e-12
+    ##  8 0.000700     1   6.85e- 9 0.00000000685    4.79e-12
+    ##  9 0.000800     1   1.02e- 8 0.0000000102     7.15e-12
+    ## 10 0.000900     1   1.45e- 8 0.0000000145     1.02e-11
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot it
@@ -82,10 +73,10 @@ r_1 <- r %>%
   ggplot(aes(x = p_grid, y = posterior, color = "red")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Riccardo being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/20, color = "blue") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4, color = "blue") +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ## Prior divided by the 20 grids for scaling
 r_1
@@ -137,7 +128,7 @@ r %>%
     ## # A tibble: 1 x 1
     ##     sum
     ##   <dbl>
-    ## 1   0.5
+    ## 1 0.500
 
 This means that there is 50% chance that Riccardo will perform better
 than chance.
@@ -149,7 +140,7 @@ than chance.
 ``` r
 ################# We do grid approximation for Kristian ################
 (k <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(2, size = 2, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -157,29 +148,20 @@ than chance.
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1    0               0        0       
-    ##  2 0.0526     1    0.00277         0.00277  0.000405
-    ##  3 0.105      1    0.0111          0.0111   0.00162 
-    ##  4 0.158      1    0.0249          0.0249   0.00364 
-    ##  5 0.211      1    0.0443          0.0443   0.00648 
-    ##  6 0.263      1    0.0693          0.0693   0.0101  
-    ##  7 0.316      1    0.0997          0.0997   0.0146  
-    ##  8 0.368      1    0.136           0.136    0.0198  
-    ##  9 0.421      1    0.177           0.177    0.0259  
-    ## 10 0.474      1    0.224           0.224    0.0328  
-    ## 11 0.526      1    0.277           0.277    0.0405  
-    ## 12 0.579      1    0.335           0.335    0.0490  
-    ## 13 0.632      1    0.399           0.399    0.0583  
-    ## 14 0.684      1    0.468           0.468    0.0684  
-    ## 15 0.737      1    0.543           0.543    0.0794  
-    ## 16 0.789      1    0.623           0.623    0.0911  
-    ## 17 0.842      1    0.709           0.709    0.104   
-    ## 18 0.895      1    0.801           0.801    0.117   
-    ## 19 0.947      1    0.898           0.898    0.131   
-    ## 20 1          1    1               1        0.146
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior   likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>        <dbl>           <dbl>     <dbl>
+    ##  1 0            1 0               0             0.      
+    ##  2 0.000100     1 0.0000000100    0.0000000100  3.00e-12
+    ##  3 0.000200     1 0.0000000400    0.0000000400  1.20e-11
+    ##  4 0.000300     1 0.0000000900    0.0000000900  2.70e-11
+    ##  5 0.000400     1 0.000000160     0.000000160   4.80e-11
+    ##  6 0.000500     1 0.000000250     0.000000250   7.50e-11
+    ##  7 0.000600     1 0.000000360     0.000000360   1.08e-10
+    ##  8 0.000700     1 0.000000490     0.000000490   1.47e-10
+    ##  9 0.000800     1 0.000000640     0.000000640   1.92e-10
+    ## 10 0.000900     1 0.000000810     0.000000810   2.43e-10
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -187,10 +169,10 @@ k %>%
   ggplot(aes(x = p_grid, y = posterior, color = "red")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Kristian being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/20) + 
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4) + 
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -217,6 +199,15 @@ samples %>%
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-4-2.png)
 
 ``` r
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.7923792 1.0000000
+
+``` r
 #We want to know how likely Riccardo is to perform above chance
 k %>% 
   filter(p_grid > .5) %>% 
@@ -226,7 +217,7 @@ k %>%
     ## # A tibble: 1 x 1
     ##     sum
     ##   <dbl>
-    ## 1 0.885
+    ## 1 0.875
 
 ``` r
 ## We do a prior predictive check
@@ -241,7 +232,7 @@ dens(ppc)
 # We do grid approximation
 
 (j <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(160, size = 198, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -249,29 +240,20 @@ dens(ppc)
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1  0.              0.        0.       
-    ##  2 0.0526     1  2.58e-165       2.58e-165 2.73e-164
-    ##  3 0.105      1  4.30e-118       4.30e-118 4.55e-117
-    ##  4 0.158      1  6.42e- 91       6.42e- 91 6.79e- 90
-    ##  5 0.211      1  5.41e- 72       5.41e- 72 5.72e- 71
-    ##  6 0.263      1  1.26e- 57       1.26e- 57 1.33e- 56
-    ##  7 0.316      1  3.51e- 46       3.51e- 46 3.72e- 45
-    ##  8 0.368      1  8.64e- 37       8.64e- 37 9.14e- 36
-    ##  9 0.421      1  6.01e- 29       6.01e- 29 6.36e- 28
-    ## 10 0.474      1  2.46e- 22       2.46e- 22 2.60e- 21
-    ## 11 0.526      1  9.40e- 17       9.40e- 17 9.94e- 16
-    ## 12 0.579      1  4.49e- 12       4.49e- 12 4.75e- 11
-    ## 13 0.632      1  3.12e-  8       3.12e-  8 3.30e-  7
-    ## 14 0.684      1  3.25e-  5       3.25e-  5 3.44e-  4
-    ## 15 0.737      1  4.50e-  3       4.50e-  3 4.76e-  2
-    ## 16 0.789      1  5.82e-  2       5.82e-  2 6.15e-  1
-    ## 17 0.842      1  3.17e-  2       3.17e-  2 3.36e-  1
-    ## 18 0.895      1  1.05e-  4       1.05e-  4 1.11e-  3
-    ## 19 0.947      1  3.59e- 12       3.59e- 12 3.80e- 11
-    ## 20 1          1  0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1          0               0         0
+    ##  2 0.000100     1          0               0         0
+    ##  3 0.000200     1          0               0         0
+    ##  4 0.000300     1          0               0         0
+    ##  5 0.000400     1          0               0         0
+    ##  6 0.000500     1          0               0         0
+    ##  7 0.000600     1          0               0         0
+    ##  8 0.000700     1          0               0         0
+    ##  9 0.000800     1          0               0         0
+    ## 10 0.000900     1          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot it
@@ -279,10 +261,10 @@ j %>%
   ggplot(aes(x = p_grid, y = posterior, color = "red")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Josh being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/20) +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -306,6 +288,15 @@ samples %>%
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-4-5.png)
 
 ``` r
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.7878788 1.0000000
+
+``` r
 #We want to know how likely Riccardo is to perform above chance
 j %>% 
   filter(p_grid > .5) %>% 
@@ -322,7 +313,7 @@ j %>%
 # We do grid approximation
 
 (m <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(66, size = 132, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -330,29 +321,20 @@ j %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1   0.              0.        0.      
-    ##  2 0.0526     1   4.26e-48        4.26e-48  2.98e-47
-    ##  3 0.105      1   7.23e-30        7.23e-30  5.06e-29
-    ##  4 0.158      1   5.54e-20        5.54e-20  3.88e-19
-    ##  5 0.211      1   1.38e-13        1.38e-13  9.65e-13
-    ##  6 0.263      1   3.61e- 9        3.61e- 9  2.53e- 8
-    ##  7 0.316      1   4.57e- 6        4.57e- 6  3.20e- 5
-    ##  8 0.368      1   6.08e- 4        6.08e- 4  4.25e- 3
-    ##  9 0.421      1   1.31e- 2        1.31e- 2  9.17e- 2
-    ## 10 0.474      1   5.77e- 2        5.77e- 2  4.04e- 1
-    ## 11 0.526      1   5.77e- 2        5.77e- 2  4.04e- 1
-    ## 12 0.579      1   1.31e- 2        1.31e- 2  9.17e- 2
-    ## 13 0.632      1   6.08e- 4        6.08e- 4  4.25e- 3
-    ## 14 0.684      1   4.57e- 6        4.57e- 6  3.20e- 5
-    ## 15 0.737      1   3.61e- 9        3.61e- 9  2.53e- 8
-    ## 16 0.789      1   1.38e-13        1.38e-13  9.65e-13
-    ## 17 0.842      1   5.54e-20        5.54e-20  3.88e-19
-    ## 18 0.895      1   7.23e-30        7.23e-30  5.06e-29
-    ## 19 0.947      1   4.26e-48        4.26e-48  2.98e-47
-    ## 20 1          1   0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1  0.              0.        0.       
+    ##  2 0.000100     1  3.77e-226       3.77e-226 5.02e-228
+    ##  3 0.000200     1  2.77e-206       2.77e-206 3.68e-208
+    ##  4 0.000300     1  1.15e-194       1.15e-194 1.53e-196
+    ##  5 0.000400     1  2.01e-186       2.01e-186 2.68e-188
+    ##  6 0.000500     1  4.98e-180       4.98e-180 6.63e-182
+    ##  7 0.000600     1  8.33e-175       8.33e-175 1.11e-176
+    ##  8 0.000700     1  2.17e-170       2.17e-170 2.88e-172
+    ##  9 0.000800     1  1.45e-166       1.45e-166 1.93e-168
+    ## 10 0.000900     1  3.42e-163       3.42e-163 4.55e-165
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot it
@@ -360,10 +342,10 @@ m %>%
   ggplot(aes(x = p_grid, y = posterior, color = "red")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Mikkel being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())  + geom_hline(yintercept=1/20) +
+  theme(panel.grid = element_blank())  + geom_hline(yintercept=1/1e4) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -375,7 +357,15 @@ set.seed(3)
 samples <-
   m %>% 
   sample_n(size = 1e4, weight = posterior, replace = T)
+# We estimate the Highest posterior density  interval
+samples <- as.data.frame(samples)
+HPDI(samples, prob=0.5 )
+```
 
+    ##      |0.5      0.5| 
+    ## 0.4719472 1.0000000
+
+``` r
 # We make a density plot of the sample
 samples %>% 
   ggplot(aes(x = p_grid)) +
@@ -387,6 +377,15 @@ samples %>%
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-4-7.png)
 
 ``` r
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.4719472 1.0000000
+
+``` r
 #We want to know how likely Mikkel is to perform above chance
 m %>% 
   filter(p_grid > .5) %>% 
@@ -396,7 +395,7 @@ m %>%
     ## # A tibble: 1 x 1
     ##     sum
     ##   <dbl>
-    ## 1   0.5
+    ## 1 0.500
 
 Josh is the best. Riccard and Mikkel both have a 50 % chance of
 performing above chance.
@@ -411,7 +410,7 @@ performing above chance.
 ### Riccardo
 # We make the new posterior from a new prior
 (r <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(3, size = 6, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -419,29 +418,20 @@ performing above chance.
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior  posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>      <dbl>
-    ##  1 0      0.000669    0            0          0         
-    ##  2 0.0526 0.00185     0.00248      0.00000459 0.00000211
-    ##  3 0.105  0.00478     0.0167       0.0000799  0.0000367 
-    ##  4 0.158  0.0115      0.0470       0.000542   0.000249  
-    ##  5 0.211  0.0259      0.0918       0.00238    0.00109   
-    ##  6 0.263  0.0544      0.146        0.00793    0.00365   
-    ##  7 0.316  0.106       0.202        0.0215     0.00987   
-    ##  8 0.368  0.194       0.252        0.0490     0.0225    
-    ##  9 0.421  0.331       0.290        0.0960     0.0441    
-    ## 10 0.474  0.527       0.310        0.163      0.0751    
-    ## 11 0.526  0.782       0.310        0.242      0.111     
-    ## 12 0.579  1.08        0.290        0.314      0.144     
-    ## 13 0.632  1.40        0.252        0.353      0.162     
-    ## 14 0.684  1.69        0.202        0.340      0.156     
-    ## 15 0.737  1.90        0.146        0.277      0.127     
-    ## 16 0.789  1.99        0.0918       0.183      0.0841    
-    ## 17 0.842  1.95        0.0470       0.0917     0.0422    
-    ## 18 0.895  1.78        0.0167       0.0298     0.0137    
-    ## 19 0.947  1.52        0.00248      0.00377    0.00173   
-    ## 20 1      1.21        0            0          0
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669   0.              0.        0.      
+    ##  2 0.000100 0.000670   2.00e-11        1.34e-14  1.17e-17
+    ##  3 0.000200 0.000672   1.60e-10        1.07e-13  9.39e-17
+    ##  4 0.000300 0.000673   5.40e-10        3.63e-13  3.17e-16
+    ##  5 0.000400 0.000675   1.28e- 9        8.63e-13  7.54e-16
+    ##  6 0.000500 0.000676   2.50e- 9        1.69e-12  1.47e-15
+    ##  7 0.000600 0.000677   4.31e- 9        2.92e-12  2.55e-15
+    ##  8 0.000700 0.000679   6.85e- 9        4.65e-12  4.06e-15
+    ##  9 0.000800 0.000680   1.02e- 8        6.95e-12  6.07e-15
+    ## 10 0.000900 0.000681   1.45e- 8        9.91e-12  8.66e-15
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -449,28 +439,35 @@ r %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Riccardo being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/20), colour="red")) +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-1.png)
 
 ``` r
-## Prior divided by the 20 grids for scaling
-#The previous plot was
-r_1
+## Prior divided by the 1e4 grids for scaling
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  r %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
 ```
 
-![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-2.png)
+    ##      |0.5      0.5| 
+    ## 0.5652565 1.3991463
 
 ``` r
 ### Kristian
 # We make the new posterior from a new prior
 (k <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(2, size = 2, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -478,29 +475,20 @@ r_1
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior   posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>       <dbl>
-    ##  1 0      0.000669    0            0          0          
-    ##  2 0.0526 0.00185     0.00277      0.00000513 0.000000523
-    ##  3 0.105  0.00478     0.0111       0.0000530  0.00000541 
-    ##  4 0.158  0.0115      0.0249       0.000287   0.0000293  
-    ##  5 0.211  0.0259      0.0443       0.00115    0.000117   
-    ##  6 0.263  0.0544      0.0693       0.00377    0.000384   
-    ##  7 0.316  0.106       0.0997       0.0106     0.00108    
-    ##  8 0.368  0.194       0.136        0.0264     0.00269    
-    ##  9 0.421  0.331       0.177        0.0587     0.00599    
-    ## 10 0.474  0.527       0.224        0.118      0.0121     
-    ## 11 0.526  0.782       0.277        0.217      0.0221     
-    ## 12 0.579  1.08        0.335        0.363      0.0370     
-    ## 13 0.632  1.40        0.399        0.558      0.0569     
-    ## 14 0.684  1.69        0.468        0.790      0.0806     
-    ## 15 0.737  1.90        0.543        1.03       0.105      
-    ## 16 0.789  1.99        0.623        1.24       0.127      
-    ## 17 0.842  1.95        0.709        1.38       0.141      
-    ## 18 0.895  1.78        0.801        1.43       0.146      
-    ## 19 0.947  1.52        0.898        1.36       0.139      
-    ## 20 1      1.21        1            1.21       0.123
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior   likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>        <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669 0                   0.        0.      
+    ##  2 0.000100 0.000670 0.0000000100        6.71e-12  1.38e-15
+    ##  3 0.000200 0.000672 0.0000000400        2.69e-11  5.54e-15
+    ##  4 0.000300 0.000673 0.0000000900        6.06e-11  1.25e-14
+    ##  5 0.000400 0.000675 0.000000160         1.08e-10  2.23e-14
+    ##  6 0.000500 0.000676 0.000000250         1.69e-10  3.48e-14
+    ##  7 0.000600 0.000677 0.000000360         2.44e-10  5.03e-14
+    ##  8 0.000700 0.000679 0.000000490         3.33e-10  6.86e-14
+    ##  9 0.000800 0.000680 0.000000640         4.35e-10  8.97e-14
+    ## 10 0.000900 0.000681 0.000000810         5.52e-10  1.14e-13
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -508,22 +496,36 @@ k %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Kristian being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/20), colour="red")) +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
-![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-3.png)
+![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-2.png)
 
 ``` r
 ## Prior divided by the 20 grids for scaling
 
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  k %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.8087809 1.7721318
+
+``` r
 #### Josh
 # We make the new posterior from a new prior
 (j <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(160, size = 198, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -531,48 +533,53 @@ k %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      0.000669  0.              0.        0.       
-    ##  2 0.0526 0.00185   2.58e-165       4.78e-168 2.56e-167
-    ##  3 0.105  0.00478   4.30e-118       2.06e-120 1.10e-119
-    ##  4 0.158  0.0115    6.42e- 91       7.40e- 93 3.97e- 92
-    ##  5 0.211  0.0259    5.41e- 72       1.40e- 73 7.51e- 73
-    ##  6 0.263  0.0544    1.26e- 57       6.84e- 59 3.67e- 58
-    ##  7 0.316  0.106     3.51e- 46       3.74e- 47 2.00e- 46
-    ##  8 0.368  0.194     8.64e- 37       1.68e- 37 9.00e- 37
-    ##  9 0.421  0.331     6.01e- 29       1.99e- 29 1.07e- 28
-    ## 10 0.474  0.527     2.46e- 22       1.30e- 22 6.94e- 22
-    ## 11 0.526  0.782     9.40e- 17       7.35e- 17 3.94e- 16
-    ## 12 0.579  1.08      4.49e- 12       4.86e- 12 2.61e- 11
-    ## 13 0.632  1.40      3.12e-  8       4.37e-  8 2.34e-  7
-    ## 14 0.684  1.69      3.25e-  5       5.49e-  5 2.94e-  4
-    ## 15 0.737  1.90      4.50e-  3       8.54e-  3 4.58e-  2
-    ## 16 0.789  1.99      5.82e-  2       1.16e-  1 6.21e-  1
-    ## 17 0.842  1.95      3.17e-  2       6.19e-  2 3.32e-  1
-    ## 18 0.895  1.78      1.05e-  4       1.88e-  4 1.01e-  3
-    ## 19 0.947  1.52      3.59e- 12       5.46e- 12 2.93e- 11
-    ## 20 1      1.21      0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669          0               0         0
+    ##  2 0.000100 0.000670          0               0         0
+    ##  3 0.000200 0.000672          0               0         0
+    ##  4 0.000300 0.000673          0               0         0
+    ##  5 0.000400 0.000675          0               0         0
+    ##  6 0.000500 0.000676          0               0         0
+    ##  7 0.000600 0.000677          0               0         0
+    ##  8 0.000700 0.000679          0               0         0
+    ##  9 0.000800 0.000680          0               0         0
+    ## 10 0.000900 0.000681          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 j %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Josh,20 points",
+  labs(subtitle = "Josh, 10000 points",
        x = "probability of Josh being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/20,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
-![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-4.png)
+![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-3.png)
+
+``` r
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  j %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.7886789 1.9852315
 
 ``` r
 #Mikkel
 # We make the new posterior from a new prior
 (m <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 10000),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(66, size = 132, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -580,43 +587,49 @@ j %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      0.000669   0.              0.        0.      
-    ##  2 0.0526 0.00185    4.26e-48        7.89e-51  8.30e-50
-    ##  3 0.105  0.00478    7.23e-30        3.46e-32  3.64e-31
-    ##  4 0.158  0.0115     5.54e-20        6.38e-22  6.71e-21
-    ##  5 0.211  0.0259     1.38e-13        3.57e-15  3.76e-14
-    ##  6 0.263  0.0544     3.61e- 9        1.96e-10  2.07e- 9
-    ##  7 0.316  0.106      4.57e- 6        4.86e- 7  5.11e- 6
-    ##  8 0.368  0.194      6.08e- 4        1.18e- 4  1.24e- 3
-    ##  9 0.421  0.331      1.31e- 2        4.34e- 3  4.57e- 2
-    ## 10 0.474  0.527      5.77e- 2        3.04e- 2  3.20e- 1
-    ## 11 0.526  0.782      5.77e- 2        4.51e- 2  4.75e- 1
-    ## 12 0.579  1.08       1.31e- 2        1.42e- 2  1.49e- 1
-    ## 13 0.632  1.40       6.08e- 4        8.50e- 4  8.95e- 3
-    ## 14 0.684  1.69       4.57e- 6        7.70e- 6  8.10e- 5
-    ## 15 0.737  1.90       3.61e- 9        6.86e- 9  7.21e- 8
-    ## 16 0.789  1.99       1.38e-13        2.75e-13  2.89e-12
-    ## 17 0.842  1.95       5.54e-20        1.08e-19  1.14e-18
-    ## 18 0.895  1.78       7.23e-30        1.29e-29  1.36e-28
-    ## 19 0.947  1.52       4.26e-48        6.48e-48  6.81e-47
-    ## 20 1      1.21       0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669  0.              0.        0.       
+    ##  2 0.000100 0.000670  3.77e-226       2.53e-229 5.06e-231
+    ##  3 0.000200 0.000672  2.77e-206       1.86e-209 3.72e-211
+    ##  4 0.000300 0.000673  1.15e-194       7.75e-198 1.55e-199
+    ##  5 0.000400 0.000675  2.01e-186       1.36e-189 2.72e-191
+    ##  6 0.000500 0.000676  4.98e-180       3.37e-183 6.73e-185
+    ##  7 0.000600 0.000677  8.33e-175       5.64e-178 1.13e-179
+    ##  8 0.000700 0.000679  2.17e-170       1.47e-173 2.94e-175
+    ##  9 0.000800 0.000680  1.45e-166       9.84e-170 1.97e-171
+    ## 10 0.000900 0.000681  3.42e-163       2.33e-166 4.66e-168
+    ## # ... with 9,990 more rows
 
 ``` r
 m %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Mikkel,20 points",
+  labs(subtitle = "Mikkel,10000 points",
        x = "probability of Mikkel being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/20,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
-![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-5.png) Do
-the results change (and if so how)?
+![](Assignment2_files/figure-markdown_github/unnamed-chunk-5-4.png)
+
+``` r
+# We sample from the Grid approximation
+set.seed(3)
+samples <-
+  m %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+samples <- as.data.frame(samples)
+# We estimate the Highest posterior density  interval
+HPDI(samples, prob=0.5 )
+```
+
+    ##      |0.5      0.5| 
+    ## 0.4858486 0.5424749
+
+Do the results change (and if so how)?
 
 For Riccardo, his posterior probability used to be highest around 50 %
 but now it is highest around 60 %. He is now more likely to answer
@@ -637,7 +650,7 @@ We do with a uniform prior
 ### Riccardo
 # We make the new posterior from a new prior
 (r <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(3*100, size = 6*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -645,29 +658,20 @@ We do with a uniform prior
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1  0.              0.        0.       
-    ##  2 0.0526     1  2.89e-212       2.89e-212 1.02e-210
-    ##  3 0.105      1  2.10e-129       2.10e-129 7.40e-128
-    ##  4 0.158      1  1.78e- 84       1.78e- 84 6.28e- 83
-    ##  5 0.211      1  2.11e- 55       2.11e- 55 7.43e- 54
-    ##  6 0.263      1  2.56e- 35       2.56e- 35 9.02e- 34
-    ##  7 0.316      1  3.21e- 21       3.21e- 21 1.13e- 19
-    ##  8 0.368      1  1.45e- 11       1.45e- 11 5.12e- 10
-    ##  9 0.421      1  1.67e-  5       1.67e-  5 5.90e-  4
-    ## 10 0.474      1  1.42e-  2       1.42e-  2 4.99e-  1
-    ## 11 0.526      1  1.42e-  2       1.42e-  2 4.99e-  1
-    ## 12 0.579      1  1.67e-  5       1.67e-  5 5.90e-  4
-    ## 13 0.632      1  1.45e- 11       1.45e- 11 5.12e- 10
-    ## 14 0.684      1  3.21e- 21       3.21e- 21 1.13e- 19
-    ## 15 0.737      1  2.56e- 35       2.56e- 35 9.02e- 34
-    ## 16 0.789      1  2.11e- 55       2.11e- 55 7.43e- 54
-    ## 17 0.842      1  1.78e- 84       1.78e- 84 6.28e- 83
-    ## 18 0.895      1  2.10e-129       2.10e-129 7.40e-128
-    ## 19 0.947      1  2.89e-212       2.89e-212 1.02e-210
-    ## 20 1          1  0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1          0               0         0
+    ##  2 0.000100     1          0               0         0
+    ##  3 0.000200     1          0               0         0
+    ##  4 0.000300     1          0               0         0
+    ##  5 0.000400     1          0               0         0
+    ##  6 0.000500     1          0               0         0
+    ##  7 0.000600     1          0               0         0
+    ##  8 0.000700     1          0               0         0
+    ##  9 0.000800     1          0               0         0
+    ## 10 0.000900     1          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -675,10 +679,10 @@ r %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "10000 points",
        x = "probability of Riccardo being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/20, colour="blue") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4, colour="blue") +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -690,7 +694,7 @@ r %>%
 ### Kristian
 # We make the new posterior from a new prior
 (k <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(2*100, size = 2*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -698,29 +702,20 @@ r %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1  0.              0.        0.       
-    ##  2 0.0526     1  1.78e-256       1.78e-256 1.78e-256
-    ##  3 0.105      1  2.85e-196       2.85e-196 2.85e-196
-    ##  4 0.158      1  4.72e-161       4.72e-161 4.72e-161
-    ##  5 0.211      1  4.58e-136       4.58e-136 4.58e-136
-    ##  6 0.263      1  1.10e-116       1.10e-116 1.10e-116
-    ##  7 0.316      1  7.58e-101       7.58e-101 7.58e-101
-    ##  8 0.368      1  1.86e- 87       1.86e- 87 1.86e- 87
-    ##  9 0.421      1  7.37e- 76       7.37e- 76 7.37e- 76
-    ## 10 0.474      1  1.25e- 65       1.25e- 65 1.25e- 65
-    ## 11 0.526      1  1.78e- 56       1.78e- 56 1.78e- 56
-    ## 12 0.579      1  3.37e- 48       3.37e- 48 3.37e- 48
-    ## 13 0.632      1  1.22e- 40       1.22e- 40 1.22e- 40
-    ## 14 0.684      1  1.09e- 33       1.09e- 33 1.09e- 33
-    ## 15 0.737      1  2.98e- 27       2.98e- 27 2.98e- 27
-    ## 16 0.789      1  2.93e- 21       2.93e- 21 2.93e- 21
-    ## 17 0.842      1  1.18e- 15       1.18e- 15 1.18e- 15
-    ## 18 0.895      1  2.18e- 10       2.18e- 10 2.18e- 10
-    ## 19 0.947      1  2.01e-  5       2.01e-  5 2.01e-  5
-    ## 20 1          1  1.00e+  0       1.00e+  0 1.00e+  0
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1          0               0         0
+    ##  2 0.000100     1          0               0         0
+    ##  3 0.000200     1          0               0         0
+    ##  4 0.000300     1          0               0         0
+    ##  5 0.000400     1          0               0         0
+    ##  6 0.000500     1          0               0         0
+    ##  7 0.000600     1          0               0         0
+    ##  8 0.000700     1          0               0         0
+    ##  9 0.000800     1          0               0         0
+    ## 10 0.000900     1          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -728,10 +723,10 @@ k %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "Kristian, 10000 points",
        x = "probability of Kristian being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/20, colour="blue") +
+  theme(panel.grid = element_blank()) + geom_hline(yintercept=1/1e4, colour="blue") +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -743,7 +738,7 @@ k %>%
 #### Josh
 # We make the new posterior from a new prior
 (j <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(160*100, size = 198*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -751,39 +746,30 @@ k %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1  0.              0.        0.       
-    ##  2 0.0526     1  0.              0.        0.       
-    ##  3 0.105      1  0.              0.        0.       
-    ##  4 0.158      1  0.              0.        0.       
-    ##  5 0.211      1  0.              0.        0.       
-    ##  6 0.263      1  0.              0.        0.       
-    ##  7 0.316      1  0.              0.        0.       
-    ##  8 0.368      1  0.              0.        0.       
-    ##  9 0.421      1  0.              0.        0.       
-    ## 10 0.474      1  0.              0.        0.       
-    ## 11 0.526      1  0.              0.        0.       
-    ## 12 0.579      1  0.              0.        0.       
-    ## 13 0.632      1  0.              0.        0.       
-    ## 14 0.684      1  0.              0.        0.       
-    ## 15 0.737      1  3.50e-123       3.50e-123 7.02e-112
-    ## 16 0.789      1  4.98e- 12       4.98e- 12 1.00e+  0
-    ## 17 0.842      1  2.45e- 38       2.45e- 38 4.92e- 27
-    ## 18 0.895      1  3.21e-286       3.21e-286 6.44e-275
-    ## 19 0.947      1  0.              0.        0.       
-    ## 20 1          1  0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1          0               0         0
+    ##  2 0.000100     1          0               0         0
+    ##  3 0.000200     1          0               0         0
+    ##  4 0.000300     1          0               0         0
+    ##  5 0.000400     1          0               0         0
+    ##  6 0.000500     1          0               0         0
+    ##  7 0.000600     1          0               0         0
+    ##  8 0.000700     1          0               0         0
+    ##  9 0.000800     1          0               0         0
+    ## 10 0.000900     1          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 j %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Josh,20 points",
+  labs(subtitle = "Josh, 10000 points",
        x = "probability of Josh being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_hline(yintercept=1/20, color="blue")+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_hline(yintercept=1/1e4, color="blue")+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-6-3.png)
@@ -792,7 +778,7 @@ j %>%
 #Mikkel
 # We make the new posterior from a new prior
 (m <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = 1) %>%                                   # define prior
    mutate(likelihood      = dbinom(66*100, size = 132*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -800,39 +786,30 @@ j %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid prior likelihood unstd_posterior posterior
-    ##     <dbl> <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0          1  0.              0.        0.       
-    ##  2 0.0526     1  0.              0.        0.       
-    ##  3 0.105      1  0.              0.        0.       
-    ##  4 0.158      1  0.              0.        0.       
-    ##  5 0.211      1  0.              0.        0.       
-    ##  6 0.263      1  0.              0.        0.       
-    ##  7 0.316      1  0.              0.        0.       
-    ##  8 0.368      1  1.36e-208       1.36e-208 8.74e-199
-    ##  9 0.421      1  2.99e- 75       2.99e- 75 1.92e- 65
-    ## 10 0.474      1  7.77e- 11       7.77e- 11 5.00e-  1
-    ## 11 0.526      1  7.77e- 11       7.77e- 11 5.00e-  1
-    ## 12 0.579      1  2.99e- 75       2.99e- 75 1.92e- 65
-    ## 13 0.632      1  1.36e-208       1.36e-208 8.74e-199
-    ## 14 0.684      1  0.              0.        0.       
-    ## 15 0.737      1  0.              0.        0.       
-    ## 16 0.789      1  0.              0.        0.       
-    ## 17 0.842      1  0.              0.        0.       
-    ## 18 0.895      1  0.              0.        0.       
-    ## 19 0.947      1  0.              0.        0.       
-    ## 20 1          1  0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid prior likelihood unstd_posterior posterior
+    ##       <dbl> <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0            1          0               0         0
+    ##  2 0.000100     1          0               0         0
+    ##  3 0.000200     1          0               0         0
+    ##  4 0.000300     1          0               0         0
+    ##  5 0.000400     1          0               0         0
+    ##  6 0.000500     1          0               0         0
+    ##  7 0.000600     1          0               0         0
+    ##  8 0.000700     1          0               0         0
+    ##  9 0.000800     1          0               0         0
+    ## 10 0.000900     1          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 m %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Mikkel,20 points",
+  labs(subtitle = "Mikkel,10000 points",
        x = "probability of Mikkel being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_hline(yintercept=1/20, color="blue") +
+  theme(panel.grid = element_blank())+geom_hline(yintercept=1/1e4, color="blue") +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -844,7 +821,7 @@ We do with the normal prior
 ### Riccardo
 # We make the new posterior from a new prior
 (r <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(3*100, size = 6*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -852,29 +829,20 @@ We do with the normal prior
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      0.000669  0.              0.        0.       
-    ##  2 0.0526 0.00185   2.89e-212       5.34e-215 2.88e-213
-    ##  3 0.105  0.00478   2.10e-129       1.00e-131 5.41e-130
-    ##  4 0.158  0.0115    1.78e- 84       2.05e- 86 1.11e- 84
-    ##  5 0.211  0.0259    2.11e- 55       5.46e- 57 2.94e- 55
-    ##  6 0.263  0.0544    2.56e- 35       1.39e- 36 7.49e- 35
-    ##  7 0.316  0.106     3.21e- 21       3.42e- 22 1.84e- 20
-    ##  8 0.368  0.194     1.45e- 11       2.83e- 12 1.52e- 10
-    ##  9 0.421  0.331     1.67e-  5       5.54e-  6 2.98e-  4
-    ## 10 0.474  0.527     1.42e-  2       7.47e-  3 4.02e-  1
-    ## 11 0.526  0.782     1.42e-  2       1.11e-  2 5.97e-  1
-    ## 12 0.579  1.08      1.67e-  5       1.81e-  5 9.75e-  4
-    ## 13 0.632  1.40      1.45e- 11       2.03e- 11 1.09e-  9
-    ## 14 0.684  1.69      3.21e- 21       5.42e- 21 2.92e- 19
-    ## 15 0.737  1.90      2.56e- 35       4.85e- 35 2.61e- 33
-    ## 16 0.789  1.99      2.11e- 55       4.20e- 55 2.26e- 53
-    ## 17 0.842  1.95      1.78e- 84       3.48e- 84 1.87e- 82
-    ## 18 0.895  1.78      2.10e-129       3.74e-129 2.02e-127
-    ## 19 0.947  1.52      2.89e-212       4.39e-212 2.36e-210
-    ## 20 1      1.21      0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669          0               0         0
+    ##  2 0.000100 0.000670          0               0         0
+    ##  3 0.000200 0.000672          0               0         0
+    ##  4 0.000300 0.000673          0               0         0
+    ##  5 0.000400 0.000675          0               0         0
+    ##  6 0.000500 0.000676          0               0         0
+    ##  7 0.000600 0.000677          0               0         0
+    ##  8 0.000700 0.000679          0               0         0
+    ##  9 0.000800 0.000680          0               0         0
+    ## 10 0.000900 0.000681          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -882,10 +850,10 @@ r %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "Riccardo, 10000 points",
        x = "probability of Riccardo being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/20), colour="red")) +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -903,7 +871,7 @@ r_1
 ### Kristian
 # We make the new posterior from a new prior
 (k <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(2*100, size = 2*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -911,29 +879,20 @@ r_1
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      0.000669  0.              0.        0.       
-    ##  2 0.0526 0.00185   1.78e-256       3.29e-259 2.72e-259
-    ##  3 0.105  0.00478   2.85e-196       1.36e-198 1.13e-198
-    ##  4 0.158  0.0115    4.72e-161       5.43e-163 4.49e-163
-    ##  5 0.211  0.0259    4.58e-136       1.19e-137 9.82e-138
-    ##  6 0.263  0.0544    1.10e-116       6.01e-118 4.96e-118
-    ##  7 0.316  0.106     7.58e-101       8.06e-102 6.67e-102
-    ##  8 0.368  0.194     1.86e- 87       3.61e- 88 2.98e- 88
-    ##  9 0.421  0.331     7.37e- 76       2.44e- 76 2.02e- 76
-    ## 10 0.474  0.527     1.25e- 65       6.60e- 66 5.46e- 66
-    ## 11 0.526  0.782     1.78e- 56       1.39e- 56 1.15e- 56
-    ## 12 0.579  1.08      3.37e- 48       3.65e- 48 3.02e- 48
-    ## 13 0.632  1.40      1.22e- 40       1.70e- 40 1.41e- 40
-    ## 14 0.684  1.69      1.09e- 33       1.84e- 33 1.52e- 33
-    ## 15 0.737  1.90      2.98e- 27       5.66e- 27 4.68e- 27
-    ## 16 0.789  1.99      2.93e- 21       5.85e- 21 4.83e- 21
-    ## 17 0.842  1.95      1.18e- 15       2.31e- 15 1.91e- 15
-    ## 18 0.895  1.78      2.18e- 10       3.89e- 10 3.22e- 10
-    ## 19 0.947  1.52      2.01e-  5       3.06e-  5 2.53e-  5
-    ## 20 1      1.21      1.00e+  0       1.21e+  0 1.00e+  0
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669          0               0         0
+    ##  2 0.000100 0.000670          0               0         0
+    ##  3 0.000200 0.000672          0               0         0
+    ##  4 0.000300 0.000673          0               0         0
+    ##  5 0.000400 0.000675          0               0         0
+    ##  6 0.000500 0.000676          0               0         0
+    ##  7 0.000600 0.000677          0               0         0
+    ##  8 0.000700 0.000679          0               0         0
+    ##  9 0.000800 0.000680          0               0         0
+    ## 10 0.000900 0.000681          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -941,10 +900,10 @@ k %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "Kristian, 10000 points",
        x = "probability of Kristian being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/20), colour="red")) +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4), colour="red")) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -956,7 +915,7 @@ k %>%
 #### Josh
 # We make the new posterior from a new prior
 (j <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(160*100, size = 198*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -964,39 +923,30 @@ k %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      0.000669  0.              0.        0.       
-    ##  2 0.0526 0.00185   0.              0.        0.       
-    ##  3 0.105  0.00478   0.              0.        0.       
-    ##  4 0.158  0.0115    0.              0.        0.       
-    ##  5 0.211  0.0259    0.              0.        0.       
-    ##  6 0.263  0.0544    0.              0.        0.       
-    ##  7 0.316  0.106     0.              0.        0.       
-    ##  8 0.368  0.194     0.              0.        0.       
-    ##  9 0.421  0.331     0.              0.        0.       
-    ## 10 0.474  0.527     0.              0.        0.       
-    ## 11 0.526  0.782     0.              0.        0.       
-    ## 12 0.579  1.08      0.              0.        0.       
-    ## 13 0.632  1.40      0.              0.        0.       
-    ## 14 0.684  1.69      0.              0.        0.       
-    ## 15 0.737  1.90      3.50e-123       6.64e-123 6.69e-112
-    ## 16 0.789  1.99      4.98e- 12       9.93e- 12 1.00e+  0
-    ## 17 0.842  1.95      2.45e- 38       4.79e- 38 4.82e- 27
-    ## 18 0.895  1.78      3.21e-286       5.72e-286 5.76e-275
-    ## 19 0.947  1.52      0.              0.        0.       
-    ## 20 1      1.21      0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669          0               0         0
+    ##  2 0.000100 0.000670          0               0         0
+    ##  3 0.000200 0.000672          0               0         0
+    ##  4 0.000300 0.000673          0               0         0
+    ##  5 0.000400 0.000675          0               0         0
+    ##  6 0.000500 0.000676          0               0         0
+    ##  7 0.000600 0.000677          0               0         0
+    ##  8 0.000700 0.000679          0               0         0
+    ##  9 0.000800 0.000680          0               0         0
+    ## 10 0.000900 0.000681          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 j %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Josh,20 points",
+  labs(subtitle = "Josh, 10000 points",
        x = "probability of Josh being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/20,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-7-4.png)
@@ -1005,7 +955,7 @@ j %>%
 #Mikkel
 # We make the new posterior from a new prior
 (m <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.8, sd = 0.2)) %>%                                   # define prior
    mutate(likelihood      = dbinom(66*100, size = 132*100, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -1013,39 +963,30 @@ j %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      0.000669  0.              0.        0.       
-    ##  2 0.0526 0.00185   0.              0.        0.       
-    ##  3 0.105  0.00478   0.              0.        0.       
-    ##  4 0.158  0.0115    0.              0.        0.       
-    ##  5 0.211  0.0259    0.              0.        0.       
-    ##  6 0.263  0.0544    0.              0.        0.       
-    ##  7 0.316  0.106     0.              0.        0.       
-    ##  8 0.368  0.194     1.36e-208       2.64e-209 2.60e-199
-    ##  9 0.421  0.331     2.99e- 75       9.91e- 76 9.74e- 66
-    ## 10 0.474  0.527     7.77e- 11       4.10e- 11 4.03e-  1
-    ## 11 0.526  0.782     7.77e- 11       6.08e- 11 5.97e-  1
-    ## 12 0.579  1.08      2.99e- 75       3.24e- 75 3.18e- 65
-    ## 13 0.632  1.40      1.36e-208       1.90e-208 1.87e-198
-    ## 14 0.684  1.69      0.              0.        0.       
-    ## 15 0.737  1.90      0.              0.        0.       
-    ## 16 0.789  1.99      0.              0.        0.       
-    ## 17 0.842  1.95      0.              0.        0.       
-    ## 18 0.895  1.78      0.              0.        0.       
-    ## 19 0.947  1.52      0.              0.        0.       
-    ## 20 1      1.21      0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        0.000669          0               0         0
+    ##  2 0.000100 0.000670          0               0         0
+    ##  3 0.000200 0.000672          0               0         0
+    ##  4 0.000300 0.000673          0               0         0
+    ##  5 0.000400 0.000675          0               0         0
+    ##  6 0.000500 0.000676          0               0         0
+    ##  7 0.000600 0.000677          0               0         0
+    ##  8 0.000700 0.000679          0               0         0
+    ##  9 0.000800 0.000680          0               0         0
+    ## 10 0.000900 0.000681          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 m %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Mikkel,20 points",
+  labs(subtitle = "Mikkel, 10000 points",
        x = "probability of Mikkel being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/20,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.8, sd = 0.2)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-7-5.png) We
@@ -1070,7 +1011,7 @@ lot by the normal prior.
 ### Riccardo
 # We make the new posterior from a new prior
 (r <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
    mutate(likelihood      = dbinom(3, size = 6, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -1078,29 +1019,20 @@ lot by the normal prior.
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      1.54e-21    0              0.        0.      
-    ##  2 0.0526 3.30e-17    0.00248        8.17e-20  1.42e-20
-    ##  3 0.105  2.33e-13    0.0167         3.90e-15  6.76e-16
-    ##  4 0.158  5.45e-10    0.0470         2.56e-11  4.44e-12
-    ##  5 0.211  4.20e- 7    0.0918         3.86e- 8  6.70e- 9
-    ##  6 0.263  1.07e- 4    0.146          1.56e- 5  2.71e- 6
-    ##  7 0.316  9.01e- 3    0.202          1.82e- 3  3.15e- 4
-    ##  8 0.368  2.50e- 1    0.252          6.30e- 2  1.09e- 2
-    ##  9 0.421  2.29e+ 0    0.290          6.65e- 1  1.15e- 1
-    ## 10 0.474  6.95e+ 0    0.310          2.15e+ 0  3.73e- 1
-    ## 11 0.526  6.95e+ 0    0.310          2.15e+ 0  3.73e- 1
-    ## 12 0.579  2.29e+ 0    0.290          6.65e- 1  1.15e- 1
-    ## 13 0.632  2.50e- 1    0.252          6.30e- 2  1.09e- 2
-    ## 14 0.684  9.01e- 3    0.202          1.82e- 3  3.15e- 4
-    ## 15 0.737  1.07e- 4    0.146          1.56e- 5  2.71e- 6
-    ## 16 0.789  4.20e- 7    0.0918         3.86e- 8  6.70e- 9
-    ## 17 0.842  5.45e-10    0.0470         2.56e-11  4.44e-12
-    ## 18 0.895  2.33e-13    0.0167         3.90e-15  6.76e-16
-    ## 19 0.947  3.30e-17    0.00248        8.17e-20  1.42e-20
-    ## 20 1      1.54e-21    0              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        1.54e-21   0.              0.        0.      
+    ##  2 0.000100 1.57e-21   2.00e-11        3.14e-32  1.04e-35
+    ##  3 0.000200 1.60e-21   1.60e-10        2.56e-31  8.45e-35
+    ##  4 0.000300 1.63e-21   5.40e-10        8.82e-31  2.91e-34
+    ##  5 0.000400 1.67e-21   1.28e- 9        2.13e-30  7.03e-34
+    ##  6 0.000500 1.70e-21   2.50e- 9        4.25e-30  1.40e-33
+    ##  7 0.000600 1.74e-21   4.31e- 9        7.48e-30  2.47e-33
+    ##  8 0.000700 1.77e-21   6.85e- 9        1.21e-29  4.00e-33
+    ##  9 0.000800 1.81e-21   1.02e- 8        1.85e-29  6.08e-33
+    ## 10 0.000900 1.84e-21   1.45e- 8        2.68e-29  8.83e-33
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -1108,10 +1040,10 @@ r %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "Riccardo, 10000 points",
        x = "probability of Riccardo being right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.5, sd = 0.05)/20), colour="red")) +
+  theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.5, sd = 0.05)/1e4), colour="red")) +
   scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
@@ -1123,7 +1055,7 @@ r %>%
 ### Kristian
 # We make the new posterior from a new prior
 (k <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
    mutate(likelihood      = dbinom(2, size = 2, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -1131,29 +1063,20 @@ r %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      1.54e-21    0              0.        0.      
-    ##  2 0.0526 3.30e-17    0.00277        9.13e-20  1.90e-20
-    ##  3 0.105  2.33e-13    0.0111         2.58e-15  5.39e-16
-    ##  4 0.158  5.45e-10    0.0249         1.36e-11  2.83e-12
-    ##  5 0.211  4.20e- 7    0.0443         1.86e- 8  3.88e- 9
-    ##  6 0.263  1.07e- 4    0.0693         7.41e- 6  1.55e- 6
-    ##  7 0.316  9.01e- 3    0.0997         8.98e- 4  1.87e- 4
-    ##  8 0.368  2.50e- 1    0.136          3.39e- 2  7.08e- 3
-    ##  9 0.421  2.29e+ 0    0.177          4.07e- 1  8.48e- 2
-    ## 10 0.474  6.95e+ 0    0.224          1.56e+ 0  3.25e- 1
-    ## 11 0.526  6.95e+ 0    0.277          1.92e+ 0  4.01e- 1
-    ## 12 0.579  2.29e+ 0    0.335          7.69e- 1  1.60e- 1
-    ## 13 0.632  2.50e- 1    0.399          9.98e- 2  2.08e- 2
-    ## 14 0.684  9.01e- 3    0.468          4.22e- 3  8.79e- 4
-    ## 15 0.737  1.07e- 4    0.543          5.81e- 5  1.21e- 5
-    ## 16 0.789  4.20e- 7    0.623          2.62e- 7  5.46e- 8
-    ## 17 0.842  5.45e-10    0.709          3.86e-10  8.05e-11
-    ## 18 0.895  2.33e-13    0.801          1.87e-13  3.89e-14
-    ## 19 0.947  3.30e-17    0.898          2.96e-17  6.17e-18
-    ## 20 1      1.54e-21    1              1.54e-21  3.21e-22
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior   likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>        <dbl>           <dbl>     <dbl>
+    ##  1 0        1.54e-21 0                   0.        0.      
+    ##  2 0.000100 1.57e-21 0.0000000100        1.57e-29  6.22e-33
+    ##  3 0.000200 1.60e-21 0.0000000400        6.41e-29  2.54e-32
+    ##  4 0.000300 1.63e-21 0.0000000900        1.47e-28  5.83e-32
+    ##  5 0.000400 1.67e-21 0.000000160         2.67e-28  1.06e-31
+    ##  6 0.000500 1.70e-21 0.000000250         4.25e-28  1.68e-31
+    ##  7 0.000600 1.74e-21 0.000000360         6.25e-28  2.47e-31
+    ##  8 0.000700 1.77e-21 0.000000490         8.67e-28  3.44e-31
+    ##  9 0.000800 1.81e-21 0.000000640         1.16e-27  4.58e-31
+    ## 10 0.000900 1.84e-21 0.000000810         1.49e-27  5.91e-31
+    ## # ... with 9,990 more rows
 
 ``` r
 ## We plot
@@ -1161,7 +1084,7 @@ k %>%
   ggplot(aes(x = p_grid, y = posterior, colour="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "20 points",
+  labs(subtitle = "Kristian, 10000 points",
        x = "probability of Kristian being right",
        y = "posterior probability") +
   theme(panel.grid = element_blank()) + geom_line(aes(p_grid, (dnorm(p_grid, mean = 0.5, sd = 0.05)/20), colour="red")) +
@@ -1176,7 +1099,7 @@ k %>%
 #### Josh
 # We make the new posterior from a new prior
 (j <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
    mutate(likelihood      = dbinom(160, size = 198, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -1184,39 +1107,30 @@ k %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      1.54e-21  0.              0.        0.       
-    ##  2 0.0526 3.30e-17  2.58e-165       8.52e-182 1.06e-175
-    ##  3 0.105  2.33e-13  4.30e-118       1.00e-130 1.24e-124
-    ##  4 0.158  5.45e-10  6.42e- 91       3.50e-100 4.34e- 94
-    ##  5 0.211  4.20e- 7  5.41e- 72       2.27e- 78 2.82e- 72
-    ##  6 0.263  1.07e- 4  1.26e- 57       1.35e- 61 1.67e- 55
-    ##  7 0.316  9.01e- 3  3.51e- 46       3.17e- 48 3.92e- 42
-    ##  8 0.368  2.50e- 1  8.64e- 37       2.16e- 37 2.68e- 31
-    ##  9 0.421  2.29e+ 0  6.01e- 29       1.38e- 28 1.71e- 22
-    ## 10 0.474  6.95e+ 0  2.46e- 22       1.71e- 21 2.12e- 15
-    ## 11 0.526  6.95e+ 0  9.40e- 17       6.53e- 16 8.09e- 10
-    ## 12 0.579  2.29e+ 0  4.49e- 12       1.03e- 11 1.28e-  5
-    ## 13 0.632  2.50e- 1  3.12e-  8       7.81e-  9 9.68e-  3
-    ## 14 0.684  9.01e- 3  3.25e-  5       2.93e-  7 3.63e-  1
-    ## 15 0.737  1.07e- 4  4.50e-  3       4.82e-  7 5.97e-  1
-    ## 16 0.789  4.20e- 7  5.82e-  2       2.45e-  8 3.03e-  2
-    ## 17 0.842  5.45e-10  3.17e-  2       1.73e- 11 2.14e-  5
-    ## 18 0.895  2.33e-13  1.05e-  4       2.46e- 17 3.05e- 11
-    ## 19 0.947  3.30e-17  3.59e- 12       1.18e- 28 1.47e- 22
-    ## 20 1      1.54e-21  0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        1.54e-21          0               0         0
+    ##  2 0.000100 1.57e-21          0               0         0
+    ##  3 0.000200 1.60e-21          0               0         0
+    ##  4 0.000300 1.63e-21          0               0         0
+    ##  5 0.000400 1.67e-21          0               0         0
+    ##  6 0.000500 1.70e-21          0               0         0
+    ##  7 0.000600 1.74e-21          0               0         0
+    ##  8 0.000700 1.77e-21          0               0         0
+    ##  9 0.000800 1.81e-21          0               0         0
+    ## 10 0.000900 1.84e-21          0               0         0
+    ## # ... with 9,990 more rows
 
 ``` r
 j %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Josh,20 points",
+  labs(subtitle = "Josh, 10000 points",
        x = "probability of Josh being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.5, sd = 0.05)/20,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.5, sd = 0.05)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-8-3.png)
@@ -1225,7 +1139,7 @@ j %>%
 #Mikkel
 # We make the new posterior from a new prior
 (m <-
- tibble(p_grid            = seq(from = 0, to = 1, length.out = 20),  # define grid
+ tibble(p_grid            = seq(from = 0, to = 1, length.out = 1e4),  # define grid
         prior             = dnorm(p_grid, mean = 0.5, sd = 0.05)) %>%                                   # define prior
    mutate(likelihood      = dbinom(66, size = 132, prob = p_grid)) %>%  # compute likelihood at each value in grid
    mutate(unstd_posterior = likelihood * prior) %>%                  # compute product of likelihood and prior
@@ -1233,39 +1147,30 @@ j %>%
 )
 ```
 
-    ## # A tibble: 20 x 5
-    ##    p_grid    prior likelihood unstd_posterior posterior
-    ##     <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
-    ##  1 0      1.54e-21   0.              0.        0.      
-    ##  2 0.0526 3.30e-17   4.26e-48        1.40e-64  1.63e-64
-    ##  3 0.105  2.33e-13   7.23e-30        1.69e-42  1.95e-42
-    ##  4 0.158  5.45e-10   5.54e-20        3.02e-29  3.50e-29
-    ##  5 0.211  4.20e- 7   1.38e-13        5.79e-20  6.72e-20
-    ##  6 0.263  1.07e- 4   3.61e- 9        3.87e-13  4.49e-13
-    ##  7 0.316  9.01e- 3   4.57e- 6        4.11e- 8  4.77e- 8
-    ##  8 0.368  2.50e- 1   6.08e- 4        1.52e- 4  1.76e- 4
-    ##  9 0.421  2.29e+ 0   1.31e- 2        3.00e- 2  3.48e- 2
-    ## 10 0.474  6.95e+ 0   5.77e- 2        4.01e- 1  4.65e- 1
-    ## 11 0.526  6.95e+ 0   5.77e- 2        4.01e- 1  4.65e- 1
-    ## 12 0.579  2.29e+ 0   1.31e- 2        3.00e- 2  3.48e- 2
-    ## 13 0.632  2.50e- 1   6.08e- 4        1.52e- 4  1.76e- 4
-    ## 14 0.684  9.01e- 3   4.57e- 6        4.11e- 8  4.77e- 8
-    ## 15 0.737  1.07e- 4   3.61e- 9        3.87e-13  4.49e-13
-    ## 16 0.789  4.20e- 7   1.38e-13        5.79e-20  6.72e-20
-    ## 17 0.842  5.45e-10   5.54e-20        3.02e-29  3.50e-29
-    ## 18 0.895  2.33e-13   7.23e-30        1.69e-42  1.95e-42
-    ## 19 0.947  3.30e-17   4.26e-48        1.40e-64  1.63e-64
-    ## 20 1      1.54e-21   0.              0.        0.
+    ## # A tibble: 10,000 x 5
+    ##      p_grid    prior likelihood unstd_posterior posterior
+    ##       <dbl>    <dbl>      <dbl>           <dbl>     <dbl>
+    ##  1 0        1.54e-21  0.              0.        0.       
+    ##  2 0.000100 1.57e-21  3.77e-226       5.93e-247 1.30e-249
+    ##  3 0.000200 1.60e-21  2.77e-206       4.43e-227 9.76e-230
+    ##  4 0.000300 1.63e-21  1.15e-194       1.88e-215 4.14e-218
+    ##  5 0.000400 1.67e-21  2.01e-186       3.36e-207 7.39e-210
+    ##  6 0.000500 1.70e-21  4.98e-180       8.47e-201 1.87e-203
+    ##  7 0.000600 1.74e-21  8.33e-175       1.44e-195 3.18e-198
+    ##  8 0.000700 1.77e-21  2.17e-170       3.84e-191 8.45e-194
+    ##  9 0.000800 1.81e-21  1.45e-166       2.61e-187 5.76e-190
+    ## 10 0.000900 1.84e-21  3.42e-163       6.30e-184 1.39e-186
+    ## # ... with 9,990 more rows
 
 ``` r
 m %>% 
   ggplot(aes(x = p_grid, y = posterior,color="blue")) +
   geom_point() +
   geom_line() +
-  labs(subtitle = "Mikkel,20 points",
+  labs(subtitle = "Mikkel, 10000 points",
        x = "probability of Mikkel being Right",
        y = "posterior probability") +
-  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.5, sd = 0.05)/20,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
+  theme(panel.grid = element_blank())+geom_line(aes(x=p_grid,y=dnorm(p_grid, mean = 0.5, sd = 0.05)/1e4,color="red"))+ scale_color_discrete(name = "Y series", labels = c("Posterior distribution", "Prior distribution"))
 ```
 
 ![](Assignment2_files/figure-markdown_github/unnamed-chunk-8-4.png)
@@ -1332,7 +1237,7 @@ pretty_plot <- function(p_grid, prior, likelihood, posterior, title = " "){
     geom_line() + 
     labs(x = "x", y = "Density", title = title) + 
     theme_bw() + 
-    ggplot2::theme(panel.background = element_rect(fill = "yellow"),
+    ggplot2::theme(panel.background = element_rect(fill = "white"),
                    panel.border = element_blank()) +
     scale_colour_brewer(palette = "Dark2", direction = 1)
   return(p)
