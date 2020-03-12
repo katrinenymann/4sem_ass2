@@ -53,10 +53,6 @@ calc_teacher <- function(n_correct, n_question, prior, length_out = 10000){
               grid = p_grid))
 }
 
-# We use the function
-kt_results <- calc_teacher(2, 2, prior = inf_prior)
-# We plot it
-plot(kt_results$grid, kt_results$teacher_posterior)
 
 # We make a function to make a pretty plot
 pretty_plot <- function(p_grid, prior, likelihood, posterior, title = " "){
@@ -121,7 +117,7 @@ rf_uni <- calc_teacher(3, 6, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
 
-pretty_plot(rf_uni$grid, prior_uniform, rf_uni$likelihood, rf_uni$teacher_posterior, title = "Proabbility of Riccardo Being Right")
+pretty_plot(rf_uni$grid, prior_uniform, rf_uni$likelihood, rf_uni$teacher_posterior, title = "Probability of Riccardo Being Right")
 
 set.seed(3)
 
@@ -169,14 +165,14 @@ precis(globe_qa)
 kt_uni <- calc_teacher(2, 2, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(kt_uni$grid, prior_uniform, kt_uni$likelihood, kt_uni$teacher_posterior, title = "Proabbility of Kristian Being Right")
+pretty_plot(kt_uni$grid, prior_uniform, kt_uni$likelihood, kt_uni$teacher_posterior, title = "Probability of Kristian Being Right")
 
 set.seed(3)
 
 #Creating a tibble from the posterior etc. 
 kt_uni_df <- tibble(p_grid=kt_uni$grid, prior=prior_uniform, likelihood = kt_uni$likelihood, posterior = kt_uni$teacher_posterior)
 
-#Sampling from the posterior 
+#Sampling from the posterior with sample_n to get a density plot
 samples_kt_uni <-
   kt_uni_df %>% 
   sample_n(size = 1e4, weight = posterior, replace = T)
@@ -187,6 +183,13 @@ samples_kt_uni %>%
   coord_cartesian(xlim = 0:1) +
   xlab("Chance of Kristian being Right (p)")
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_kt_uni <-
+  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_kt_uni)
+sd(samples_kt_uni)
 
 #Summarizing the posterior 
 kt_uni_df %>% 
@@ -216,11 +219,18 @@ samples_js_uni %>%
   coord_cartesian(xlim = 0:1) +
   xlab("Chance of Joshua being Right (p)")
 
-
 #Summarizing the posterior 
 js_uni_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+sd(samples_js_uni)
 
 ################################ Mikkel ####################################
 #Calculating posterior 
@@ -250,6 +260,14 @@ samples_mw_uni %>%
 mw_uni_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+sd(samples_mw_uni)
 
 ```
 
@@ -292,6 +310,14 @@ rf_norm_df %>%
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_rf_uni <-
+  sample(size = 1e4, x = p_grid, prob = rf_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+sd(samples_rf_uni)
+
 
 ################################### Kristian ######################################
 #Calculating posterior 
@@ -322,6 +348,14 @@ kt_norm_df %>%
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_kt_uni <-
+  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_kt_uni)
+sd(samples_kt_uni)
+
 #################################### Joshua #################################
 #Calculating posterior 
 js_norm <- calc_teacher(160, 198, prior_norm, length_out = 1e4)
@@ -351,6 +385,14 @@ js_norm_df %>%
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+sd(samples_js_uni)
+
 ################################ Mikkel ####################################
 #Calculating posterior 
 mw_norm <- calc_teacher(66, 132, prior_norm, length_out = 1e4)
@@ -378,6 +420,14 @@ samples_mw_norm %>%
 mw_norm_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+sd(samples_mw_uni)
 ```
 
 
@@ -418,6 +468,14 @@ rf_uni_df %>%
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_rf_uni <-
+  sample(size = 1e4, x = p_grid, prob = rf_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_rf_uni)
+sd(samples_rf_uni)
+
 ##################### Normally distributed prior ################################
 # Creating normally distributed prior
 p_grid <- seq(from = 0, to = 1, length.out = 1e4)
@@ -451,6 +509,14 @@ samples_rf_norm %>%
 rf_norm_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+sd(samples_js_uni)
 
 ```
 
@@ -513,6 +579,14 @@ samples_kt_norm %>%
 kt_norm_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_kt_uni <-
+  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_kt_uni)
+sd(samples_kt_uni)
 ```
 
 #### Joshua ####
@@ -546,13 +620,21 @@ js_uni_df %>%
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
 
-############################ Normally Distriuted #################################
+# Getting the mean and sd
+mean(samples_js_uni)
+sd(samples_js_uni)
+
+
+############################ Normally Distributed #################################
 #Calculating posterior 
 js_norm <- calc_teacher(16000, 19800, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(js_norm$grid, prior_norm, js_norm$likelihood, js_norm$teacher_posterior, title = "Proabbility of Joshua Being Right")
+pretty_plot(js_norm$grid, prior_norm, js_norm$likelihood, js_norm$teacher_posterior, title = "Probability of Joshua Being Right")
 
 set.seed(3)
 
@@ -575,6 +657,14 @@ samples_js_norm %>%
 js_norm_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+sd(samples_js_uni)
 ```
 
 #### Mikkel ####
@@ -608,6 +698,14 @@ mw_uni_df %>%
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
 
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+sd(samples_mw_uni)
+
 ############################### Normally Distributed ############################
 #Calculating posterior 
 mw_norm <- calc_teacher(6600, 13200, prior_norm, length_out = 1e4)
@@ -635,6 +733,14 @@ samples_mw_norm %>%
 mw_norm_df %>% 
   filter(p_grid >.5) %>% 
   summarise(sum = sum(posterior))/1e4
+
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+sd(samples_mw_uni)
 ```
 
 5. Imagine you're a skeptic and think your teachers do not know anything about CogSci, given the content of their classes. How would you operationalize that belief?

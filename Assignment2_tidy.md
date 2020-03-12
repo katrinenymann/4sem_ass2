@@ -34,15 +34,7 @@ calc_teacher <- function(n_correct, n_question, prior, length_out = 10000){
               grid = p_grid))
 }
 
-# We use the function
-kt_results <- calc_teacher(2, 2, prior = inf_prior)
-# We plot it
-plot(kt_results$grid, kt_results$teacher_posterior)
-```
 
-![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-1-1.png)
-
-``` r
 # We make a function to make a pretty plot
 pretty_plot <- function(p_grid, prior, likelihood, posterior, title = " "){
   # define data
@@ -115,7 +107,7 @@ rf_uni <- calc_teacher(3, 6, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
 
-pretty_plot(rf_uni$grid, prior_uniform, rf_uni$likelihood, rf_uni$teacher_posterior, title = "Proabbility of Riccardo Being Right")
+pretty_plot(rf_uni$grid, prior_uniform, rf_uni$likelihood, rf_uni$teacher_posterior, title = "Probability of Riccardo Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-2-1.png)
@@ -179,7 +171,7 @@ precis(globe_qa)
 kt_uni <- calc_teacher(2, 2, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(kt_uni$grid, prior_uniform, kt_uni$likelihood, kt_uni$teacher_posterior, title = "Proabbility of Kristian Being Right")
+pretty_plot(kt_uni$grid, prior_uniform, kt_uni$likelihood, kt_uni$teacher_posterior, title = "Probability of Kristian Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-3-1.png)
@@ -190,7 +182,7 @@ set.seed(3)
 #Creating a tibble from the posterior etc. 
 kt_uni_df <- tibble(p_grid=kt_uni$grid, prior=prior_uniform, likelihood = kt_uni$likelihood, posterior = kt_uni$teacher_posterior)
 
-#Sampling from the posterior 
+#Sampling from the posterior with sample_n to get a density plot
 samples_kt_uni <-
   kt_uni_df %>% 
   sample_n(size = 1e4, weight = posterior, replace = T)
@@ -203,6 +195,23 @@ samples_kt_uni %>%
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-3-2.png)
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_kt_uni <-
+  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_kt_uni)
+```
+
+    ## [1] 0.7486945
+
+``` r
+sd(samples_kt_uni)
+```
+
+    ## [1] 0.1940843
 
 ``` r
 #Summarizing the posterior 
@@ -256,6 +265,23 @@ js_uni_df %>%
     ## 1 0.9999
 
 ``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+```
+
+    ## [1] 0.8048058
+
+``` r
+sd(samples_js_uni)
+```
+
+    ## [1] 0.02780299
+
+``` r
 ################################ Mikkel ####################################
 #Calculating posterior 
 mw_uni <- calc_teacher(66, 132, prior_uniform, length_out = 1e4)
@@ -295,6 +321,23 @@ mw_uni_df %>%
 
     ##       sum
     ## 1 0.49995
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+```
+
+    ## [1] 0.4994134
+
+``` r
+sd(samples_mw_uni)
+```
+
+    ## [1] 0.04323463
 
 1.  Change the prior. Given your teachers have all CogSci jobs, you
     should start with a higher appreciation of their knowledge: the
@@ -349,6 +392,23 @@ rf_norm_df %>%
     ## 1 0.8416926
 
 ``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_rf_uni <-
+  sample(size = 1e4, x = p_grid, prob = rf_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+```
+
+    ## [1] 0.8048058
+
+``` r
+sd(samples_rf_uni)
+```
+
+    ## [1] 0.1662459
+
+``` r
 ################################### Kristian ######################################
 #Calculating posterior 
 kt_norm <- calc_teacher(2, 2, prior_norm, length_out = 1e4)
@@ -388,6 +448,23 @@ kt_norm_df %>%
 
     ##         sum
     ## 1 0.9756702
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_kt_uni <-
+  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_kt_uni)
+```
+
+    ## [1] 0.7486945
+
+``` r
+sd(samples_kt_uni)
+```
+
+    ## [1] 0.1940843
 
 ``` r
 #################################### Joshua #################################
@@ -431,6 +508,23 @@ js_norm_df %>%
     ## 1 0.9999
 
 ``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+```
+
+    ## [1] 0.8048058
+
+``` r
+sd(samples_js_uni)
+```
+
+    ## [1] 0.02780299
+
+``` r
 ################################ Mikkel ####################################
 #Calculating posterior 
 mw_norm <- calc_teacher(66, 132, prior_norm, length_out = 1e4)
@@ -470,6 +564,23 @@ mw_norm_df %>%
 
     ##         sum
     ## 1 0.6239958
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+```
+
+    ## [1] 0.4994134
+
+``` r
+sd(samples_mw_uni)
+```
+
+    ## [1] 0.04323463
 
 1.  You go back to your teachers and collect more data (multiply the
     previous numbers by 100). Calculate their knowledge with both a
@@ -525,6 +636,23 @@ rf_uni_df %>%
     ## 1 0.49995
 
 ``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_rf_uni <-
+  sample(size = 1e4, x = p_grid, prob = rf_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_rf_uni)
+```
+
+    ## [1] 0.4997199
+
+``` r
+sd(samples_rf_uni)
+```
+
+    ## [1] 0.02036487
+
+``` r
 ##################### Normally distributed prior ################################
 # Creating normally distributed prior
 p_grid <- seq(from = 0, to = 1, length.out = 1e4)
@@ -569,6 +697,23 @@ rf_norm_df %>%
 
     ##         sum
     ## 1 0.5603469
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+```
+
+    ## [1] 0.8048058
+
+``` r
+sd(samples_js_uni)
+```
+
+    ## [1] 0.02780299
 
 #### Kristian
 
@@ -654,6 +799,23 @@ kt_norm_df %>%
     ##      sum
     ## 1 0.9999
 
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_kt_uni <-
+  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_kt_uni)
+```
+
+    ## [1] 0.9950965
+
+``` r
+sd(samples_kt_uni)
+```
+
+    ## [1] 0.00483825
+
 #### Joshua
 
 ``` r
@@ -698,12 +860,29 @@ js_uni_df %>%
     ## 1 0.9999
 
 ``` r
-############################ Normally Distriuted #################################
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+```
+
+    ## [1] 0.8080078
+
+``` r
+sd(samples_js_uni)
+```
+
+    ## [1] 0.002791794
+
+``` r
+############################ Normally Distributed #################################
 #Calculating posterior 
 js_norm <- calc_teacher(16000, 19800, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(js_norm$grid, prior_norm, js_norm$likelihood, js_norm$teacher_posterior, title = "Proabbility of Joshua Being Right")
+pretty_plot(js_norm$grid, prior_norm, js_norm$likelihood, js_norm$teacher_posterior, title = "Probability of Joshua Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-7-3.png)
@@ -737,6 +916,23 @@ js_norm_df %>%
 
     ##      sum
     ## 1 0.9999
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_js_uni <-
+  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_js_uni)
+```
+
+    ## [1] 0.8080078
+
+``` r
+sd(samples_js_uni)
+```
+
+    ## [1] 0.002791794
 
 #### Mikkel
 
@@ -782,6 +978,23 @@ mw_uni_df %>%
     ## 1 0.49995
 
 ``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+```
+
+    ## [1] 0.4999652
+
+``` r
+sd(samples_mw_uni)
+```
+
+    ## [1] 0.004323122
+
+``` r
 ############################### Normally Distributed ############################
 #Calculating posterior 
 mw_norm <- calc_teacher(6600, 13200, prior_norm, length_out = 1e4)
@@ -821,6 +1034,23 @@ mw_norm_df %>%
 
     ##         sum
     ## 1 0.5129637
+
+``` r
+#Sampling from the posterior with sample to get the mean and sd
+samples_mw_uni <-
+  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
+
+# Getting the mean and sd
+mean(samples_mw_uni)
+```
+
+    ## [1] 0.4999652
+
+``` r
+sd(samples_mw_uni)
+```
+
+    ## [1] 0.004323122
 
 1.  Imagine you’re a skeptic and think your teachers do not know
     anything about CogSci, given the content of their classes. How would
