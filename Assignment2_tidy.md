@@ -143,6 +143,27 @@ rf_uni_df %>%
     ## 1 0.49995
 
 ``` r
+# We estimate the Highest posterior density  interval
+HPDI(samples_rf_uni$p_grid, prob=0.5)
+```
+
+    ##      |0.5      0.5| 
+    ## 0.3785379 0.6186619
+
+``` r
+# Getting the mean and sd
+mean(samples_rf_uni$p_grid)
+```
+
+    ## [1] 0.4993688
+
+``` r
+sd(samples_rf_uni$p_grid)
+```
+
+    ## [1] 0.1660154
+
+``` r
 # This means the probability of Riccardo performing better than chance is 50 % 
 
 # Quadratic approximation 
@@ -197,23 +218,6 @@ samples_kt_uni %>%
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-3-2.png)
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_kt_uni <-
-  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_kt_uni)
-```
-
-    ## [1] 0.7486945
-
-``` r
-sd(samples_kt_uni)
-```
-
-    ## [1] 0.1940843
-
-``` r
 #Summarizing the posterior 
 kt_uni_df %>% 
   filter(p_grid >.5) %>% 
@@ -224,12 +228,33 @@ kt_uni_df %>%
     ## 1 0.8749312
 
 ``` r
+# We estimate the Highest posterior density  interval
+HPDI(samples_kt_uni$p_grid, prob=0.5)
+```
+
+    ##      |0.5      0.5| 
+    ## 0.7923792 1.0000000
+
+``` r
+# Getting the mean and sd
+mean(samples_kt_uni$p_grid)
+```
+
+    ## [1] 0.7475606
+
+``` r
+sd(samples_kt_uni$p_grid)
+```
+
+    ## [1] 0.1954394
+
+``` r
 #################################### Joshua #################################
 #Calculating posterior 
 js_uni <- calc_teacher(160, 198, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(js_uni$grid, prior_uniform, js_uni$likelihood, js_uni$teacher_posterior, title = "Proabbility of Joshua Being Right")
+pretty_plot(js_uni$grid, prior_uniform, js_uni$likelihood, js_uni$teacher_posterior, title = "Probability of Joshua Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-3-3.png)
@@ -265,21 +290,25 @@ js_uni_df %>%
     ## 1 0.9999
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_js_uni <-
-  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_js_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_js_uni$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.8048058
+    ##      |0.5      0.5| 
+    ## 0.7878788 0.8254825
 
 ``` r
-sd(samples_js_uni)
+# Getting the mean and sd
+mean(samples_js_uni$p_grid)
 ```
 
-    ## [1] 0.02780299
+    ## [1] 0.8047798
+
+``` r
+sd(samples_js_uni$p_grid)
+```
+
+    ## [1] 0.02818499
 
 ``` r
 ################################ Mikkel ####################################
@@ -287,7 +316,7 @@ sd(samples_js_uni)
 mw_uni <- calc_teacher(66, 132, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(mw_uni$grid, prior_uniform, mw_uni$likelihood, mw_uni$teacher_posterior, title = "Proabbility of Mikkel Being Right")
+pretty_plot(mw_uni$grid, prior_uniform, mw_uni$likelihood, mw_uni$teacher_posterior, title = "Probability of Mikkel Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-3-5.png)
@@ -323,21 +352,25 @@ mw_uni_df %>%
     ## 1 0.49995
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_mw_uni <-
-  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_mw_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_mw_uni$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.4994134
+    ##      |0.5      0.5| 
+    ## 0.4719472 0.5297530
 
 ``` r
-sd(samples_mw_uni)
+# Getting the mean and sd
+mean(samples_mw_uni$p_grid)
 ```
 
-    ## [1] 0.04323463
+    ## [1] 0.4994667
+
+``` r
+sd(samples_mw_uni$p_grid)
+```
+
+    ## [1] 0.04301949
 
 1.  Change the prior. Given your teachers have all CogSci jobs, you
     should start with a higher appreciation of their knowledge: the
@@ -356,7 +389,7 @@ rf_norm <- calc_teacher(3, 6, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
 
-pretty_plot(rf_norm$grid, prior_norm, rf_norm$likelihood, rf_norm$teacher_posterior, title = "Proabbility of Riccardo Being Right")
+pretty_plot(rf_norm$grid, prior_norm, rf_norm$likelihood, rf_norm$teacher_posterior, title = "Probability of Riccardo Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-4-1.png)
@@ -392,21 +425,25 @@ rf_norm_df %>%
     ## 1 0.8416926
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_rf_uni <-
-  sample(size = 1e4, x = p_grid, prob = rf_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_js_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_rf_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.8048058
+    ##      |0.5      0.5| 
+    ## 0.5652565 0.7397740
 
 ``` r
-sd(samples_rf_uni)
+# Getting the mean and sd
+mean(samples_rf_norm$p_grid)
 ```
 
-    ## [1] 0.1662459
+    ## [1] 0.6253683
+
+``` r
+sd(samples_rf_norm$p_grid)
+```
+
+    ## [1] 0.126698
 
 ``` r
 ################################### Kristian ######################################
@@ -414,7 +451,7 @@ sd(samples_rf_uni)
 kt_norm <- calc_teacher(2, 2, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(kt_norm$grid, prior_norm, kt_norm$likelihood, kt_norm$teacher_posterior, title = "Proabbility of Kristian Being Right")
+pretty_plot(kt_norm$grid, prior_norm, kt_norm$likelihood, kt_norm$teacher_posterior, title = "Probability of Kristian Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-4-3.png)
@@ -450,21 +487,30 @@ kt_norm_df %>%
     ## 1 0.9756702
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_kt_uni <-
-  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_kt_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_kt_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.7486945
+    ##      |0.5      0.5| 
+    ## 0.8087809 0.9842984
 
 ``` r
-sd(samples_kt_uni)
+# Getting the mean and sd
+mean(samples_kt_norm$p_gird)
 ```
 
-    ## [1] 0.1940843
+    ## Warning: Unknown or uninitialised column: 'p_gird'.
+
+    ## Warning in mean.default(samples_kt_norm$p_gird): argument is not numeric or
+    ## logical: returning NA
+
+    ## [1] NA
+
+``` r
+sd(samples_kt_norm$p_grid)
+```
+
+    ## [1] 0.1333393
 
 ``` r
 #################################### Joshua #################################
@@ -472,7 +518,7 @@ sd(samples_kt_uni)
 js_norm <- calc_teacher(160, 198, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(js_norm$grid, prior_norm, js_norm$likelihood, js_norm$teacher_posterior, title = "Proabbility of Joshua Being Right")
+pretty_plot(js_norm$grid, prior_norm, js_norm$likelihood, js_norm$teacher_posterior, title = "Probability of Joshua Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-4-5.png)
@@ -508,21 +554,24 @@ js_norm_df %>%
     ## 1 0.9999
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_js_uni <-
-  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_js_uni)
+rethinking::HPDI(samples_js_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.8048058
+    ##      |0.5      0.5| 
+    ## 0.7886789 0.8258826
 
 ``` r
-sd(samples_js_uni)
+# Getting the mean and sd
+mean(samples_js_norm$p_grid)
 ```
 
-    ## [1] 0.02780299
+    ## [1] 0.8047192
+
+``` r
+sd(samples_js_norm$p_grid)
+```
+
+    ## [1] 0.02797104
 
 ``` r
 ################################ Mikkel ####################################
@@ -530,7 +579,7 @@ sd(samples_js_uni)
 mw_norm <- calc_teacher(66, 132, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(mw_norm$grid, prior_norm, mw_norm$likelihood, mw_norm$teacher_posterior, title = "Proabbility of Mikkel Being Right")
+pretty_plot(mw_norm$grid, prior_norm, mw_norm$likelihood, mw_norm$teacher_posterior, title = "Probability of Mikkel Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-4-7.png)
@@ -566,21 +615,25 @@ mw_norm_df %>%
     ## 1 0.6239958
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_mw_uni <-
-  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_mw_uni)
+# We estimate the Highest posterior density  interval
+rethinking::HPDI(samples_mw_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.4994134
+    ##      |0.5      0.5| 
+    ## 0.4858486 0.5420542
 
 ``` r
-sd(samples_mw_uni)
+# Getting the mean and sd
+mean(samples_mw_norm$p_grid)
 ```
 
-    ## [1] 0.04323463
+    ## [1] 0.513117
+
+``` r
+sd(samples_mw_norm$p_grid)
+```
+
+    ## [1] 0.04176717
 
 1.  You go back to your teachers and collect more data (multiply the
     previous numbers by 100). Calculate their knowledge with both a
@@ -600,7 +653,7 @@ rf_uni <- calc_teacher(300, 600, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
 
-pretty_plot(rf_uni$grid, prior_uniform, rf_uni$likelihood, rf_uni$teacher_posterior, title = "Proabbility of Riccardo Being Right")
+pretty_plot(rf_uni$grid, prior_uniform, rf_uni$likelihood, rf_uni$teacher_posterior, title = "Probability of Riccardo Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-5-1.png)
@@ -636,21 +689,25 @@ rf_uni_df %>%
     ## 1 0.49995
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_rf_uni <-
-  sample(size = 1e4, x = p_grid, prob = rf_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_rf_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_rf_uni$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.4997199
+    ##      |0.5      0.5| 
+    ## 0.4874487 0.5147515
 
 ``` r
-sd(samples_rf_uni)
+# Getting the mean and sd
+mean(samples_rf_uni$p_grid)
 ```
 
-    ## [1] 0.02036487
+    ## [1] 0.4998123
+
+``` r
+sd(samples_rf_uni$p_grid)
+```
+
+    ## [1] 0.02020914
 
 ``` r
 ##################### Normally distributed prior ################################
@@ -663,7 +720,7 @@ rf_norm <- calc_teacher(300, 600, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
 
-pretty_plot(rf_norm$grid, prior_norm, rf_norm$likelihood, rf_norm$teacher_posterior, title = "Proabbility of Riccardo Being Right")
+pretty_plot(rf_norm$grid, prior_norm, rf_norm$likelihood, rf_norm$teacher_posterior, title = "Probability of Riccardo Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-5-3.png)
@@ -699,21 +756,25 @@ rf_norm_df %>%
     ## 1 0.5603469
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_js_uni <-
-  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_js_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_rf_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.8048058
+    ##      |0.5      0.5| 
+    ## 0.4901490 0.5174517
 
 ``` r
-sd(samples_js_uni)
+# Getting the mean and sd
+mean(samples_rf_norm$p_grid)
 ```
 
-    ## [1] 0.02780299
+    ## [1] 0.5027396
+
+``` r
+sd(samples_rf_norm$p_grid)
+```
+
+    ## [1] 0.02020554
 
 #### Kristian
 
@@ -723,7 +784,7 @@ sd(samples_js_uni)
 kt_uni <- calc_teacher(200, 200, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(kt_uni$grid, prior_uniform, kt_uni$likelihood, kt_uni$teacher_posterior, title = "Proabbility of Kristian Being Right")
+pretty_plot(kt_uni$grid, prior_uniform, kt_uni$likelihood, kt_uni$teacher_posterior, title = "Probability of Kristian Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-6-1.png)
@@ -759,12 +820,33 @@ kt_uni_df %>%
     ## 1 0.9999
 
 ``` r
+# We estimate the Highest posterior density  interval
+HPDI(samples_kt_uni$p_grid, prob=0.5)
+```
+
+    ##      |0.5      0.5| 
+    ## 0.9965997 1.0000000
+
+``` r
+# Getting the mean and sd
+mean(samples_kt_uni$p_grid)
+```
+
+    ## [1] 0.9950977
+
+``` r
+sd(samples_kt_uni$p_grid)
+```
+
+    ## [1] 0.004970798
+
+``` r
 ################### Normally distributed prior ######################
 #Calculating posterior 
 kt_norm <- calc_teacher(200, 200, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(kt_norm$grid, prior_norm, kt_norm$likelihood, kt_norm$teacher_posterior, title = "Proabbility of Kristian Being Right")
+pretty_plot(kt_norm$grid, prior_norm, kt_norm$likelihood, kt_norm$teacher_posterior, title = "Probability of Kristian Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-6-3.png)
@@ -800,21 +882,25 @@ kt_norm_df %>%
     ## 1 0.9999
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_kt_uni <-
-  sample(size = 1e4, x = p_grid, prob = kt_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_kt_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_kt_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.9950965
+    ##      |0.5      0.5| 
+    ## 0.9964996 1.0000000
 
 ``` r
-sd(samples_kt_uni)
+# Getting the mean and sd
+mean(samples_kt_norm$p_grid)
 ```
 
-    ## [1] 0.00483825
+    ## [1] 0.9949695
+
+``` r
+sd(samples_kt_norm$p_grid)
+```
+
+    ## [1] 0.005115184
 
 #### Joshua
 
@@ -824,7 +910,7 @@ sd(samples_kt_uni)
 js_uni <- calc_teacher(16000, 19800, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(js_uni$grid, prior_uniform, js_uni$likelihood, js_uni$teacher_posterior, title = "Proabbility of Joshua Being Right")
+pretty_plot(js_uni$grid, prior_uniform, js_uni$likelihood, js_uni$teacher_posterior, title = "Probability of Joshua Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-7-1.png)
@@ -860,21 +946,25 @@ js_uni_df %>%
     ## 1 0.9999
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_js_uni <-
-  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_js_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_js_uni$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.8080078
+    ##      |0.5      0.5| 
+    ## 0.8059806 0.8096810
 
 ``` r
-sd(samples_js_uni)
+# Getting the mean and sd
+mean(samples_js_uni$p_grid)
 ```
 
-    ## [1] 0.002791794
+    ## [1] 0.8080414
+
+``` r
+sd(samples_js_uni$p_grid)
+```
+
+    ## [1] 0.002766804
 
 ``` r
 ############################ Normally Distributed #################################
@@ -918,21 +1008,25 @@ js_norm_df %>%
     ## 1 0.9999
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_js_uni <-
-  sample(size = 1e4, x = p_grid, prob = js_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_js_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_js_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.8080078
+    ##      |0.5      0.5| 
+    ## 0.8059806 0.8096810
 
 ``` r
-sd(samples_js_uni)
+# Getting the mean and sd
+mean(samples_js_norm$p_grid)
 ```
 
-    ## [1] 0.002791794
+    ## [1] 0.8080394
+
+``` r
+sd(samples_js_norm$p_grid)
+```
+
+    ## [1] 0.002765654
 
 #### Mikkel
 
@@ -942,7 +1036,7 @@ sd(samples_js_uni)
 mw_uni <- calc_teacher(6600, 13200, prior_uniform, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(mw_uni$grid, prior_uniform, mw_uni$likelihood, mw_uni$teacher_posterior, title = "Proabbility of Mikkel Being Right")
+pretty_plot(mw_uni$grid, prior_uniform, mw_uni$likelihood, mw_uni$teacher_posterior, title = "Probability of Mikkel Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-8-1.png)
@@ -978,21 +1072,25 @@ mw_uni_df %>%
     ## 1 0.49995
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_mw_uni <-
-  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_mw_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_mw_uni$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.4999652
+    ##      |0.5      0.5| 
+    ## 0.4966497 0.5024502
 
 ``` r
-sd(samples_mw_uni)
+# Getting the mean and sd
+mean(samples_mw_uni$p_grid)
 ```
 
-    ## [1] 0.004323122
+    ## [1] 0.4999577
+
+``` r
+sd(samples_mw_uni$p_grid)
+```
+
+    ## [1] 0.004328824
 
 ``` r
 ############################### Normally Distributed ############################
@@ -1000,7 +1098,7 @@ sd(samples_mw_uni)
 mw_norm <- calc_teacher(6600, 13200, prior_norm, length_out = 1e4)
 
 # Visualizing posterior 
-pretty_plot(mw_norm$grid, prior_norm, mw_norm$likelihood, mw_norm$teacher_posterior, title = "Proabbility of Mikkel Being Right")
+pretty_plot(mw_norm$grid, prior_norm, mw_norm$likelihood, mw_norm$teacher_posterior, title = "Probability of Mikkel Being Right")
 ```
 
 ![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-8-3.png)
@@ -1036,21 +1134,25 @@ mw_norm_df %>%
     ## 1 0.5129637
 
 ``` r
-#Sampling from the posterior with sample to get the mean and sd
-samples_mw_uni <-
-  sample(size = 1e4, x = p_grid, prob = mw_uni_df$posterior, replace = T)
-
-# Getting the mean and sd
-mean(samples_mw_uni)
+# We estimate the Highest posterior density  interval
+HPDI(samples_mw_norm$p_grid, prob=0.5)
 ```
 
-    ## [1] 0.4999652
+    ##      |0.5      0.5| 
+    ## 0.4967497 0.5025503
 
 ``` r
-sd(samples_mw_uni)
+# Getting the mean and sd
+mean(samples_mw_norm$p_grid)
 ```
 
-    ## [1] 0.004323122
+    ## [1] 0.5001025
+
+``` r
+sd(samples_mw_norm$p_grid)
+```
+
+    ## [1] 0.004333477
 
 1.  Imagine you’re a skeptic and think your teachers do not know
     anything about CogSci, given the content of their classes. How would
@@ -1133,3 +1235,266 @@ js_results <- calc_teacher(2, 2, prior = inf_prior)
 
 mw_results <- calc_teacher(2, 2, prior = inf_prior)
 ```
+
+Part 2 2- Provide at least one plot and one written line discussing
+prediction errors for each of the teachers.
+
+``` r
+# We make a new df for this years observations
+results_df_2 <- data.frame(teacher = c("RF", "KT", "JS", "MW"),
+                         correct = c(9, 8, 148, 34), 
+                         n_quest = c(10, 12, 172, 65))
+#We define p_grid
+p_grid <-   p_grid <- seq(0,1, length.out = 10000)
+#We define the bin_size
+bin_size <- abs(p_grid[1] - p_grid[2])
+#We define an informed prior
+inf_prior <- dnorm(p_grid, 0.8, 0.2)
+
+# We use the function to calculate the old kt results
+kt_results <- calc_teacher(2, 2, prior = inf_prior)
+# We plot it
+plot(kt_results$grid, kt_results$teacher_posterior)
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-1.png)
+
+``` r
+#Now we want to calculate the new results with the old results as a prior
+# We use the function to calculate the old kt results
+kt_results_2 <- calc_teacher(8, 12, prior = kt_results$teacher_posterior)
+# We plot it
+plot(kt_results_2$grid, kt_results_2$teacher_posterior)
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-2.png)
+
+``` r
+# We plot the new
+pretty_plot(p_grid, 
+            prior = kt_results$teacher_posterior, 
+            likelihood = kt_results_2$likelihood, 
+            posterior = kt_results_2$teacher_posterior, title = "Kristian's new posterior distribution")
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-3.png)
+
+``` r
+# We now make a tibble to calculate mean and sd
+kt_df <- tibble(p_grid=p_grid, prior=kt_results$teacher_posterior, likelihood = kt_results_2$likelihood, posterior = kt_results_2$teacher_posterior)
+
+# We sample for the posterior
+samples_kt <-
+  kt_df %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+
+# we calculate mean and sd
+mean(samples_kt$p_grid)
+```
+
+    ## [1] 0.7173801
+
+``` r
+sd(samples_kt$p_grid)
+```
+
+    ## [1] 0.09464107
+
+``` r
+# We sample from the prior
+samples_kt <-
+  kt_df %>% 
+  sample_n(size = 1e4, weight = prior, replace = T)
+
+# We calculate mean and sd
+mean(samples_kt$p_grid)
+```
+
+    ## [1] 0.8035473
+
+``` r
+sd(samples_kt$p_grid)
+```
+
+    ## [1] 0.1332873
+
+``` r
+###Mikkel###
+
+mw_old<-calc_teacher(66,132,inf_prior,length_out = 10000)
+#calculate new results
+mw_new<-calc_teacher(34,65,mw_old$teacher_posterior,length_out = 10000)
+
+#function(p_grid, prior, likelihood, posterior, title = " ")
+mw_old_plot<-pretty_plot(p_grid,inf_prior,mw_old$likelihood,mw_old$teacher_posterior)
+mw_old_plot
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-4.png)
+
+``` r
+mw_new_plot<-pretty_plot(
+  p_grid=mw_results$grid, mw_old$teacher_posterior,
+  mw_new$likelihood,
+  mw_new$teacher_posterior,
+  title ="Mikkel´s new posterior distribution")
+mw_new_plot
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-5.png)
+
+``` r
+# We now make a tibble to calculate mean and sd
+mw_df <- tibble(p_grid=p_grid, prior=mw_old$teacher_posterior, likelihood = mw_new$likelihood, posterior = mw_new$teacher_posterior)
+
+# We sample for the posterior
+samples_mw <-
+  mw_df %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+
+# we calculate mean and sd
+mean(samples_mw$p_grid)
+```
+
+    ## [1] 0.5174327
+
+``` r
+sd(samples_mw$p_grid)
+```
+
+    ## [1] 0.03483223
+
+``` r
+# We sample from the prior
+samples_mw <-
+  mw_df %>% 
+  sample_n(size = 1e4, weight = prior, replace = T)
+
+# We calculate mean and sd
+mean(samples_mw$p_grid)
+```
+
+    ## [1] 0.5141518
+
+``` r
+sd(samples_mw$p_grid)
+```
+
+    ## [1] 0.04184823
+
+``` r
+###Josh###
+
+j_old<-calc_teacher(160,198,inf_prior,length_out = 10000)
+#calculate new results
+j_new<-calc_teacher(148,172,j_old$teacher_posterior,length_out = 10000)
+
+#function(p_grid, prior, likelihood, posterior, title = " ")
+j_old_plot<-pretty_plot(p_grid,inf_prior,j_old$likelihood,j_old$teacher_posterior)
+j_old_plot
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-6.png)
+
+``` r
+j_new_plot<-pretty_plot(p_grid,j_old$teacher_posterior,j_new$likelihood,j_new$teacher_posterior,"Josh´s new posterior distribution")
+j_new_plot
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-7.png)
+
+``` r
+# We now make a tibble to calculate mean and sd
+js_df <- tibble(p_grid=p_grid, prior=j_old$teacher_posterior, likelihood = j_new$likelihood, posterior = j_new$teacher_posterior)
+
+# We sample for the posterior
+samples_js <-
+  js_df %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+
+# we calculate mean and sd
+mean(samples_js$p_grid)
+```
+
+    ## [1] 0.8306575
+
+``` r
+sd(samples_js$p_grid)
+```
+
+    ## [1] 0.01923289
+
+``` r
+# We sample from the prior
+samples_js <-
+  js_df %>% 
+  sample_n(size = 1e4, weight = prior, replace = T)
+
+# We calculate mean and sd
+mean(samples_js$p_grid)
+```
+
+    ## [1] 0.8049001
+
+``` r
+sd(samples_js$p_grid)
+```
+
+    ## [1] 0.0274927
+
+``` r
+###riccardo###
+
+r_old<-calc_teacher(3,6,inf_prior,length_out = 10000)
+#calculate new results
+r_new<-calc_teacher(9,10,r_old$teacher_posterior,length_out = 10000)
+
+#function(p_grid, prior, likelihood, posterior, title = " ")
+r_old_plot<-pretty_plot(p_grid,inf_prior,r_old$likelihood,r_old$teacher_posterior, title = "Riccardos old posterior distribution")
+r_old_plot
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-8.png)
+
+``` r
+r_new_plot<-pretty_plot(p_grid,r_old$teacher_posterior,r_new$likelihood,r_new$teacher_posterior,"Riccardo´s new posterior distribution")
+r_new_plot
+```
+
+![](Assignment2_tidy_files/figure-markdown_github/unnamed-chunk-10-9.png)
+
+``` r
+# We now make a tibble to calculate mean and sd
+rf_df <- tibble(p_grid=p_grid, prior=r_old$teacher_posterior, likelihood = r_new$likelihood, posterior = r_new$teacher_posterior)
+# We sample for the posterior
+samples_rf <-
+  rf_df %>% 
+  sample_n(size = 1e4, weight = posterior, replace = T)
+# we calculate mean and sd
+mean(samples_rf$p_grid)
+```
+
+    ## [1] 0.7410856
+
+``` r
+sd(samples_rf$p_grid)
+```
+
+    ## [1] 0.08838825
+
+``` r
+# We sample from the prior
+samples_rf <-
+  rf_df %>% 
+  sample_n(size = 1e4, weight = prior, replace = T)
+# We calculate mean and sd
+mean(samples_rf$p_grid)
+```
+
+    ## [1] 0.6280878
+
+``` r
+sd(samples_rf$p_grid)
+```
+
+    ## [1] 0.1255649
